@@ -18,7 +18,7 @@ ini_set ('error_reporting', E_PARSE);
 $now = date("Y-m-d H:i:s");
 
 function next_post_m($format='%', $next='next post: ', $title='yes', $in_same_cat='no', $limitnext=1, $excluded_categories='') {
-	global $tableposts, $p, $posts, $id, $post, $siteurl, $blogfilename, $wpdb;
+	global $tableposts, $p, $posts, $id, $post, $blogfilename, $wpdb;
 	global $time_difference, $single;
 	global $querystring_start, $querystring_equal, $querystring_separator;
 	if(($p) || ($posts==1) || 1 == $single) {
@@ -55,7 +55,7 @@ function next_post_m($format='%', $next='next post: ', $title='yes', $in_same_ca
 		                           ."LIMIT $limitnext,1"
 		                           );
 		if ($nextpost) {
-			$string = '<a href="'.$PHPSELF.'?p='.$nextpost->ID.'&more=1">'.$next;
+			$string = '<a href="'.$_SERVER['PHP_SELF'].'?p='.$nextpost->ID.'&more=1">'.$next;
 			if ($title=='yes') {
 				$string .= wptexturize(stripslashes($nextpost->post_title));
 			}
@@ -67,7 +67,7 @@ function next_post_m($format='%', $next='next post: ', $title='yes', $in_same_ca
 }
 
 function previous_post_m($format='%', $previous='previous post: ', $title='yes', $in_same_cat='no', $limitprev=1, $excluded_categories='') {
-	global $tableposts, $id, $post, $siteurl, $blogfilename, $wpdb;
+	global $tableposts, $id, $post, $blogfilename, $wpdb;
 	global $p, $posts, $posts_per_page, $s, $single;
 	global $querystring_start, $querystring_equal, $querystring_separator;
 
@@ -101,7 +101,7 @@ function previous_post_m($format='%', $previous='previous post: ', $title='yes',
 		                           ."LIMIT $limitprev, 1"
 		                           );
 		if ($lastpost) {
-			$string = '<a href="'.$PHPSELF.'?p='.$lastpost->ID.'&more=1">'.$previous;
+			$string = '<a href="'.$_SERVER['PHP_SELF'].'?p='.$lastpost->ID.'&more=1">'.$previous;
 			if ($title == 'yes') {
                 $string .= wptexturize(stripslashes($lastpost->post_title));
             }
@@ -122,8 +122,8 @@ else {
 }
 
 $main_blogfilename = get_settings('blogfilename');
-if (strrpos($HTTP_SERVER_VARS["PHP_SELF"], "/") != false) {
-	$blogfilename = substr($HTTP_SERVER_VARS["PHP_SELF"], strrpos($HTTP_SERVER_VARS["PHP_SELF"], "/") + 1);
+if (strrpos($_SERVER['PHP_SELF'], "/") != false) {
+	$blogfilename = substr($_SERVER['PHP_SELF'], strrpos($HTTP_SERVER_VARS["PHP_SELF"], "/") + 1);
 }
 else {
 	$blogfilename = $HTTP_SERVER_VARS["PHP_SELF"];
@@ -171,7 +171,7 @@ Archives
 			while($arc_row = mysql_fetch_array($arc_result)) {
 				$arc_year  = $arc_row['YEAR(post_date)'];
 				$arc_month = $arc_row['MONTH(post_date)'];
-				echo '<li><a href="'.$HTTP_SERVER_VARS["PHP_SELF"].'?view=month&y='.$arc_year.'&m='.$arc_month.'">';
+				echo '<li><a href="'.$_SERVER['PHP_SELF'].'?view=month&y='.$arc_year.'&m='.$arc_month.'">';
 				echo $month[zeroise($arc_month,2)].' '.$arc_year;
 				echo '</a></li>'."\n";
 			}
@@ -201,7 +201,7 @@ Archives
 			                    ."ORDER BY post_date DESC"
 			                    );
 			while ($post = mysql_fetch_array($month)) {
-				echo '<li><a href="'.$HTTP_SERVER_VARS["PHP_SELF"].'?p='.$post["ID"].'&more=1">'
+				echo '<li><a href="'.$_SERVER['PHP_SELF'].'?p='.$post["ID"].'&more=1">'
                     .stripslashes($post["post_title"])
                     .'</a> ('.substr($post["post_date"],5,5).")\n";
 			}
