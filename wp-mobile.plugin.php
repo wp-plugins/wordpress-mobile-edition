@@ -52,14 +52,14 @@ $pages_to_exclude = array('wp-mobile.php'
 $redirect = true;
 
 foreach ($pages_to_exclude as $exclude) {
-	if (strstr(str_to_lower($_SERVER['REQUEST_URI']), $exclude)) {
+	if (strstr(strtolower($_SERVER['REQUEST_URI']), $exclude)) {
 		$redirect = false;
 	}
 }
 
 if ($redirect) {
 	foreach ($small_browsers as $browser) {
-		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser) && !strstr($_SERVER['REQUEST_URI'], 'wp-mobile.php')) {
+		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser)) {
 			$URL = get_settings('siteurl').'/wp-mobile.php?';
 			if (isset($p)) {
 				$URL .= 'p='.$p.'&';
