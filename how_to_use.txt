@@ -1,0 +1,41 @@
+/*---------------------------------
+
+put both files in your blog folder
+
+include this code in your main page
+this must appear before any HTML has been sent
+
+---------------------------------*/
+
+// include functions
+require_once("wp-mobile.functions.php");
+
+// redirect to mobile site
+ak_redirect_to_mobile();
+
+/*---------------------------------
+
+Here are the browsers that are currently detected:
+
+Palm Browsers:
+
+	Palm Web Clipping
+	Eudora Web
+	Blazer
+	AventGo
+
+Pocket PC Browsers:
+
+	Pocket Internet Explorer
+	
+Newton Browsers:
+
+	Newt's Cape
+	Nethopper
+
+Other:
+
+	Danger Hiptop (T-Mobile SideKick) Browser
+	Microsoft Mobile Explorer
+
+---------------------------------*/
