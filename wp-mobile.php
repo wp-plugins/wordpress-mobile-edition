@@ -317,7 +317,7 @@ if (empty($post->post_password) ||
 
 <!-- form to add a comment -->
 
-<form action="<?php echo get_settings('siteurl'); ?>/wp-comments.post.php" method="post">
+<form action="<?php echo get_settings('siteurl'); ?>/wp-comments-post.php" method="post">
 
 	<p>
 	Your Name:
