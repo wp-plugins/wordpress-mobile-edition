@@ -1,7 +1,7 @@
 <?php
 
 // WordPress Mobile Edition
-// version 1.7, 2005-01-12
+// version 1.8b, 2005-01-18
 //
 // Copyright (c) 2002-2005 Alex King
 // http://www.alexking.org/software/wordpress/
@@ -44,20 +44,35 @@ $small_browsers = array('Elaine/3.0'
 					   ,'portalmmm'
 					   );
 
-foreach ($small_browsers as $browser) {
-	if (strstr($_SERVER["HTTP_USER_AGENT"], $browser) && !strstr($_SERVER['REQUEST_URI'], 'wp-mobile.php')) {
-		$URL = get_settings('siteurl').'/wp-mobile.php?';
-		if (isset($p)) {
-			$URL .= 'p='.$p.'&';
+$pages_to_exclude = array('wp-mobile.php'
+                         ,'wp-comments-post.php'
+                         ,'wp-mail.php'
+                         );
+
+$redirect = true;
+
+foreach ($pages_to_exclude as $exclude) {
+	if (strstr(str_to_lower($_SERVER['REQUEST_URI']), $exclude)) {
+		$redirect = false;
+	}
+}
+
+if ($redirect) {
+	foreach ($small_browsers as $browser) {
+		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser) && !strstr($_SERVER['REQUEST_URI'], 'wp-mobile.php')) {
+			$URL = get_settings('siteurl').'/wp-mobile.php?';
+			if (isset($p)) {
+				$URL .= 'p='.$p.'&';
+			}
+			if (isset($m)) {
+				$URL .= 'm='.$m.'&';
+			}
+			if (isset($cat)) {
+				$URL .= 'cat='.$cat.'&';
+			}
+			header("Location: $URL");
+			die();
 		}
-		if (isset($m)) {
-			$URL .= 'm='.$m.'&';
-		}
-		if (isset($cat)) {
-			$URL .= 'cat='.$cat.'&';
-		}
-		header("Location: $URL");
-		die();
 	}
 }
 
