@@ -76,17 +76,19 @@ function ak_mobile_redirect() {
 	return $redirect;
 }
 
-
 if (ak_mobile_redirect() && ak_check_mobile()) {
 	$URL = get_settings('siteurl').'/wp-mobile.php?';
-	if (isset($p)) {
-		$URL .= 'p='.$p.'&';
-	}
-	if (isset($m)) {
-		$URL .= 'm='.$m.'&';
-	}
-	if (isset($cat)) {
-		$URL .= 'cat='.$cat.'&';
+	$vars = array(
+		'year'
+		,'monthnum'
+		,'day'
+		,'name'
+		,'category_name'
+	);
+	foreach ($vars as $var) {
+		if (isset($_GET[$var])) {
+			$URL .= $var.'='.$_GET[$var].'&';
+		}
 	}
 	header("Location: $URL");
 	die();
