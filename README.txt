@@ -1,5 +1,5 @@
 WordPress Mobile Edition README
-version 1.7, 2005-01-12
+version 1.8, 2006-03-02
 
 This hack will provide mobile device friendly interface for your blog.
 
