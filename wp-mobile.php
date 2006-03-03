@@ -131,7 +131,7 @@ else {
 ?>
 <html>
 <head>
-<title><?php bloginfo('name'); ?> mobile edition</title>
+<title><?php bloginfo('name'); _e(' Mobile Edition') ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="HandheldFriendly" value="true" />
 <style><!-- @import url(wp-mobile.css); // --></style>
@@ -150,14 +150,14 @@ if (isset($_REQUEST["view"])) {
 		case "archives":
 ?>
 <p>
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>">Latest Post</a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>#last_10">Last 10 Posts</a> |
-Archives 
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>"><?php _e('Latest Post'); ?></a> |
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>#last_10"><?php _e('Last 10 Posts'); ?></a> |
+<?php _e('Archives'); ?>
 </p>
 
 <hr />
 
-<h2>Archives by Month</h2>
+<h2><?php _e('Archives by Month'); ?></h2>
 
 <ul>
 <?php
@@ -183,14 +183,14 @@ Archives
 			$selected_month = mktime(0, 0, 0, $_REQUEST["m"], 1, $_REQUEST["y"]);
 ?>
 <p>
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>">Latest Post</a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>#last_10">Last 10 Posts</a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives">Archives</a> 
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>"><?php _e('Latest Post'); ?></a> |
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>#last_10"><?php _e('Last 10 Posts'); ?></a> |
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives"><?php _e('Archives'); ?></a> 
 </p>
 
 <hr />
 
-<h2><?php echo date("F Y", $selected_month); ?> Posts</h2>
+<h2><?php echo date("F Y", $selected_month); ?> <?php _e('Posts'); ?></h2>
 <ul>
 <?php
 			$month = mysql_query("SELECT ID, post_title, post_date "
@@ -217,17 +217,17 @@ else {
 <?php
 	if ($latest == 1) {
 ?>
-Latest Post |
+<?php _e('Latest Post'); ?> |
 <?php
 	}
 	else {
 ?>
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>">Latest Post</a> |
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>"><?php _e('Latest Post'); ?></a> |
 <?php
 	}
 ?>
-<a href="#last_10">Last 10 Posts</a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives">Archives</a> 
+<a href="#last_10"><?php _e('Last 10 Posts'); ?></a> |
+<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives"><?php _e('Archives'); ?></a> 
 </p>
 
 <hr />
@@ -240,7 +240,7 @@ Latest Post |
 
 <h2><?php the_title(); ?></h2>
 
-<p>Posted in:</p>
+<p><?php _e('Posted in:'); ?></p>
 
 <ul>
 <?php
@@ -259,7 +259,7 @@ the_content();
 ?>
 <?php link_pages("<br />Pages: ","<br />","number") ?>
 <p>
-posted by <?php the_author() ?><br />
+<?php _e('posted by'); ?> <?php the_author() ?><br />
 <?php the_date() ?> @  <?php the_time() ?>
 </p>
 
@@ -282,7 +282,7 @@ if (empty($post->post_password) ||
 	                              );
 ?>
 
-<h3>Comments</h3>
+<h3><?php _e('Comments'); ?></h3>
 
 <ol id="comments">
 <?php 
@@ -293,7 +293,7 @@ if (empty($post->post_password) ||
 
 <li id="comment-<?php comment_ID() ?>">
 <?php comment_text() ?>
-<p><cite><?php comment_type(); ?> by <?php comment_author_link() ?> <?php comment_date() ?> @ <a href="#comment-<?php comment_ID() ?>"><?php comment_time() ?></a></cite></p>
+<p><cite><?php comment_type(); ?> <?php _e('by'); ?> <?php comment_author_link() ?> <?php comment_date() ?> @ <a href="#comment-<?php comment_ID() ?>"><?php comment_time() ?></a></cite></p>
 </li>
 
 <?php /* end of the loop, don't delete */ 
@@ -302,17 +302,39 @@ if (empty($post->post_password) ||
 	else { 
 ?>
 
-<li>No comments on this post so far.</li>
+<li><?php _e('No comments on this post so far.'); ?></li>
 
 <?php /* if you delete this the sky will fall on your head */ 
 	} 
 ?>
 </ol>
 
-<h3>Add a comment:</h3>
+<h3><?php _e('Add a comment'); ?></h3>
 
 <?php 
 	if ('open' == $post->comment_status) { 
+		if ( $user_ID ) {
+?>
+<p><?php _e('Logged in as'); ?> <strong><?php echo $user_identity; ?></strong>. <a href="<?php echo get_option('siteurl'); ?>/wp-login.php?action=logout">Logout &raquo;</a></p>
+
+<form action="<?php echo get_settings('siteurl'); ?>/wp-comments-post.php" method="post">
+
+	<p>
+	<?php _e('Comments:'); ?>
+	<br />
+	<textarea cols="40" rows="4" name="comment"></textarea>
+	</p>
+
+	<p>
+	<input type="submit" name="submit" value="<?php _e('Post Comment'); ?>" />
+	<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
+	<input type="hidden" name="redirect_to" value="<?php echo htmlspecialchars($HTTP_SERVER_VARS["REQUEST_URI"]); ?>" />
+	</p>
+
+</form>
+<?php
+		}
+		else {
 ?>
 
 <!-- form to add a comment -->
@@ -320,43 +342,43 @@ if (empty($post->post_password) ||
 <form action="<?php echo get_settings('siteurl'); ?>/wp-comments-post.php" method="post">
 
 	<p>
-	Your Name:
+	<?php _e('Your Name:'); ?>
 	<br />
 	<input type="text" name="author" value="<?php echo $comment_author ?>" size="20" />
 	<br />
-	Email:
+	<?php _e('Email:'); ?>
 	<br />
 	<input type="text" name="email" value="<?php echo $comment_author_email ?>" size="20" />
 	<br />
-	Web Site:
+	<?php _e('Web Site:'); ?>
 	<br />
 	<input type="text" name="url" value="<?php echo $comment_author_url ?>" size="20" />
 	<br />
-	Comments:
+	<?php _e('Comments:'); ?>
 	<br />
 	<textarea cols="40" rows="4" name="comment"></textarea>
 	</p>
 
 	<p>
-	<input type="submit" name="submit" value="Post Comment" />
+	<input type="submit" name="submit" value="<?php _e('Post Comment'); ?>" />
 	<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
 	<input type="hidden" name="redirect_to" value="<?php echo htmlspecialchars($HTTP_SERVER_VARS["REQUEST_URI"]); ?>" />
-	<input type="hidden" name="comment_autobr" value="1" />
 	</p>
 
 </form>
 <?php 
+		}
 	} 
 	else { // comments are closed 
 ?>
-<p>Sorry, comments are closed at this time.</p>
+<p><?php _e('Sorry, comments are closed at this time.'); ?></p>
 <?php 
 	}
 }
 ?>
 
-<p><?php previous_post_m('%','<b>Previous Post:</b> '); ?><br />
-<?php next_post_m('%','<b>Next Post:</b> '); ?></p>
+<p><?php previous_post_m('%','<b>'.__('Previous Post:').'</b> '); ?><br />
+<?php next_post_m('%','<b>'.__('Next Post:').'</b> '); ?></p>
 
 <?php // if you delete this the sky will fall on your head
 // this is just the end of the motor - don't touch that line either :)
@@ -367,7 +389,7 @@ if (empty($post->post_password) ||
 
 <hr />
 
-<h2>Last 10 posts:</h2>
+<h2><?php _e('Last 10 posts:'); ?></h2>
 <ul id="last_10">
 <?php
 $last_10 = mysql_query("SELECT ID, post_title, post_date "
@@ -390,15 +412,14 @@ while ($data = mysql_fetch_object($last_10)) {
 ?>
 </ul>
 
-<p><a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives">more Posts (Archives)</a></p>
+<p><a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives"><?php _e('More Posts (Archives)'); ?></a></p>
 
 <?php
 // closes else from view if/switch
 }
 ?>
-<p><a href="http://www.alexking.org/software/wordpress/" target="_blank">WordPress Mobile Edition</a> available at alexking.org.</p>
 
-<p>powered by <a href="http://wordpress.org" target="_blank"><b>WordPress</b></a>.</p>
+<p>Powered by <a href="http://wordpress.org"><b>WordPress</b></a>. <a href="http://www.alexking.org/software/wordpress/">WordPress Mobile Edition</a> available at alexking.org.</p>
 
 </body>
 </html>
