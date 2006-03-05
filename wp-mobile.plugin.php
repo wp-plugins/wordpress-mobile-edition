@@ -1,7 +1,7 @@
 <?php
 
 // WordPress Mobile Edition
-// version 1.8, 2006-03-02
+// version 1.8a, 2006-03-02
 //
 // Copyright (c) 2002-2006 Alex King
 // http://www.alexking.org/software/wordpress/
@@ -18,7 +18,10 @@ Plugin URI: http://www.alexking.org/software/wordpress/
 Description: Redirect mobile devices to a mobile friendly interface. Version 1.8, compatible with WP 1.5.x/2.x.
 Author: Alex King
 Author URI: http://www.alexking.org/
+Version: 1.8a
 */ 
+
+load_plugin_textdomain('alexking.org');
 
 function ak_check_mobile() {
 	if (isset($_SERVER["HTTP_USER_AGENT"])) {
