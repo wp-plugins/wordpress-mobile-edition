@@ -70,7 +70,6 @@ function akm_check_mobile() {
 		,'UP.Link'
 		,'Windows CE'
 		,'WinWAP'
-,'Firefox'
 	);
 	foreach ($small_browsers as $browser) {
 		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser)) {
