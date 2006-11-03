@@ -1,10 +1,13 @@
 <?php
 
 // WordPress Mobile Edition
-// version 1.7, 2005-01-12
+// version 2.0, 2006-11-03
 //
-// Copyright (c) 2002-2005 Alex King
-// http://www.alexking.org/software/wordpress/
+// Copyright (c) 2002-2006 Alex King
+// http://alexking.org/projects/wordpress
+//
+// Released under the GPL license
+// http://www.opensource.org/licenses/gpl-license.php
 //
 // **********************************************************************
 // This program is distributed in the hope that it will be useful, but
@@ -12,414 +15,191 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 // *****************************************************************
 
-ini_set ('display_errors', '0');
-ini_set ('error_reporting', E_PARSE);
+/*
+Plugin Name: WordPress Mobile Edition
+Plugin URI: http://alexking.org/projects/wordpress
+Description: Show a mobile view of the post/page if the visitor is on a known mobile device.
+Author: Alex King
+Author URI: http://alexking.org
+Version: 2.0
+*/ 
 
-$now = date("Y-m-d H:i:s");
+$_SERVER['REQUEST_URI'] = ( isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'] . (( isset($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '')));
 
-function next_post_m($format='%', $next='next post: ', $title='yes', $in_same_cat='no', $limitnext=1, $excluded_categories='') {
-	global $tableposts, $p, $posts, $id, $post, $blogfilename, $wpdb;
-	global $time_difference, $single;
-	global $querystring_start, $querystring_equal, $querystring_separator;
-	if(($p) || ($posts==1) || 1 == $single) {
-
-		$current_post_date = $post->post_date;
-		$current_category = $post->post_category;
-
-		$sqlcat = '';
-		if ($in_same_cat != 'no') {
-			$sqlcat = " AND post_category='$current_category' ";
+function akm_check_mobile() {
+	if (!isset($_SERVER["HTTP_USER_AGENT"]) || (isset($_COOKIE['akm_mobile']) && $_COOKIE['akm_mobile'] == 'false')) {
+		return false;
+	}
+	$whitelist = array(
+		'Stand Alone/QNws'
+	);
+	foreach ($whitelist as $browser) {
+		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser)) {
+			return false;
 		}
+	}
+	$small_browsers = array(
+		'2.0 MMP'
+		,'240x320'
+		,'AvantGo'
+		,'BlackBerry'
+		,'Blazer'
+		,'Cellphone'
+		,'Danger'
+		,'DoCoMo'
+		,'Elaine/3.0'
+		,'EudoraWeb'
+		,'hiptop'
+		,'MMEF20'
+		,'MOT-V'
+		,'NetFront'
+		,'Newt'
+		,'Nokia'
+		,'Opera Mini'
+		,'Palm'
+		,'portalmmm'
+		,'Proxinet'
+		,'ProxiNet'
+		,'SHARP-TQ-GX10'
+		,'Small'
+		,'SonyEricsson'
+		,'Symbian OS'
+		,'SymbianOS'
+		,'TS21i-10'
+		,'UP.Browser'
+		,'UP.Link'
+		,'Windows CE'
+		,'WinWAP'
+,'Firefox'
+	);
+	foreach ($small_browsers as $browser) {
+		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser)) {
+			return true;
+		}
+	}
+	return false;
+}
 
-		$sql_exclude_cats = '';
-		if (!empty($excluded_categories)) {
-			$blah = explode('and', $excluded_categories);
-			foreach($blah as $category) {
-				$category = intval($category);
-				$sql_exclude_cats .= " AND post_category != $category";
+function akm_mobile_redirect() {
+	$redirect = true;
+	$pages_to_exclude = array(
+		'wp-admin'
+		,'wp-mobile.php'
+		,'wp-comments-post.php'
+		,'wp-mail.php'
+		,'wp-login.php'
+	);
+	foreach ($pages_to_exclude as $exclude) {
+		if (strstr(strtolower($_SERVER['REQUEST_URI']), $exclude)) {
+			$redirect = false;
+		}
+	}
+	return $redirect;
+}
+
+function akm_template($theme) {
+	return 'wp-mobile';
+}
+
+function akm_mobile_available($content) {
+	return $content.'<p><a href="'.get_bloginfo('wpurl').'/wp-admin/options-general.php?ak_action=accept_mobile">Return to the Mobile Edition</a>.</p>';
+}
+
+if (!function_exists('ak_recent_posts')) {
+// this is based almost entirely on:
+/*
+Plugin Name: Recent Posts
+Plugin URI: http://mtdewvirus.com/code/wordpress-plugins/
+Description: Returns a list of the most recent posts.
+Version: 1.07
+Author: Nick Momrik
+Author URI: http://mtdewvirus.com/
+*/
+	function ak_recent_posts($count = 5, $before = '<li>', $after = '</li>', $hide_pass_post = true, $skip_posts = 0, $show_excerpts = false, $where = '', $join = '', $groupby = '') {
+		global $wpdb;
+		$time_difference = get_settings('gmt_offset');
+		$now = gmdate("Y-m-d H:i:s",time());
+	
+		$join = apply_filters('posts_join', $join);
+		$where = apply_filters('posts_where', $where);
+		$groupby = apply_filters('posts_groupby', $groupby);
+		if (!empty($groupby)) { $groupby = ' GROUP BY '.$groupby; }
+	
+		$request = "SELECT ID, post_title, post_excerpt FROM $wpdb->posts $join WHERE post_status = 'publish' AND post_type != 'page' ";
+		if ($hide_pass_post) $request .= "AND post_password ='' ";
+		$request .= "AND post_date_gmt < '$now' $where $groupby ORDER BY post_date DESC LIMIT $skip_posts, $count";
+		$posts = $wpdb->get_results($request);
+		$output = '';
+		if ($posts) {
+			foreach ($posts as $post) {
+				$post_title = stripslashes($post->post_title);
+				$permalink = get_permalink($post->ID);
+				$output .= $before . '<a href="' . $permalink . '" rel="bookmark" title="Permanent Link: ' . htmlspecialchars($post_title, ENT_COMPAT) . '">' . htmlspecialchars($post_title) . '</a>';
+				if($show_excerpts) {
+					$post_excerpt = stripslashes($post->post_excerpt);
+					$output.= '<br />' . $post_excerpt;
+				}
+				$output .= $after;
 			}
+		} else {
+			$output .= $before . "None found" . $after;
 		}
-
-		$now = date('Y-m-d H:i:s');
-
-		$limitnext--;
-
-		$nextpost = @$wpdb->get_row("SELECT ID,post_title "
-		                           ."FROM $tableposts WHERE "
-		                           ."post_date > '$current_post_date' "
-		                           ."AND post_date < '$now' "
-		                           ."AND post_status = 'publish' "
-		                           .$sqlcat.' '
-		                           .$sql_exclude_cats.' '
-		                           ."ORDER BY post_date ASC "
-		                           ."LIMIT $limitnext,1"
-		                           );
-		if ($nextpost) {
-			$string = '<a href="'.$_SERVER['PHP_SELF'].'?p='.$nextpost->ID.'&more=1">'.$next;
-			if ($title=='yes') {
-				$string .= wptexturize(stripslashes($nextpost->post_title));
-			}
-			$string .= '</a>';
-			$format = str_replace('%', $string, $format);
-			echo $format;
-		}
+		echo $output;
 	}
 }
 
-function previous_post_m($format='%', $previous='previous post: ', $title='yes', $in_same_cat='no', $limitprev=1, $excluded_categories='') {
-	global $tableposts, $id, $post, $blogfilename, $wpdb;
-	global $p, $posts, $posts_per_page, $s, $single;
-	global $querystring_start, $querystring_equal, $querystring_separator;
-
-	if (($p) || ($posts_per_page == 1) || 1 == $single) {
-
-		$current_post_date = $post->post_date;
-		$current_category = $post->post_category;
-
-		$sqlcat = '';
-		if ($in_same_cat != 'no') {
-			$sqlcat = " AND post_category = '$current_category' ";
-		}
-
-		$sql_exclude_cats = '';
-		if (!empty($excluded_categories)) {
-			$blah = explode('and', $excluded_categories);
-			foreach($blah as $category) {
-				$category = intval($category);
-				$sql_exclude_cats .= " AND post_category != $category";
-			}
-		}
-
-		$limitprev--;
-		$lastpost = @$wpdb->get_row("SELECT ID, post_title "
-		                           ."FROM $tableposts "
-		                           ."WHERE post_date < '$current_post_date' "
-		                           ."AND post_status = 'publish' "
-		                           .$sqlcat.' '
-		                           .$sql_exclude_cats.' '
-		                           ."ORDER BY post_date DESC "
-		                           ."LIMIT $limitprev, 1"
-		                           );
-		if ($lastpost) {
-			$string = '<a href="'.$_SERVER['PHP_SELF'].'?p='.$lastpost->ID.'&more=1">'.$previous;
-			if ($title == 'yes') {
-                $string .= wptexturize(stripslashes($lastpost->post_title));
-            }
-			$string .= '</a>';
-			$format = str_replace('%', $string, $format);
-			echo $format;
-		}
-	}
-}
-
-require('./wp-blog-header.php');
-
-if (!isset($_REQUEST["p"])) {
-	$latest = 1;
-}
-else {
-	$latest = 0;
-}
-
-$main_blogfilename = get_settings('blogfilename');
-if (strrpos($_SERVER['PHP_SELF'], "/") != false) {
-	$blogfilename = substr($_SERVER['PHP_SELF'], strrpos($HTTP_SERVER_VARS["PHP_SELF"], "/") + 1);
-}
-else {
-	$blogfilename = $HTTP_SERVER_VARS["PHP_SELF"];
-}
-?>
-<html>
-<head>
-<title><?php bloginfo('name'); _e(' Mobile Edition') ?></title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<meta name="HandheldFriendly" value="true" />
-<style><!-- @import url(wp-mobile.css); // --></style>
-</head>
-
-<body>
-
-<h1><?php bloginfo('name'); ?></h1>
-
-<hr />
-
-<?php
-// show archive view?
-if (isset($_REQUEST["view"])) {
-	switch ($_REQUEST["view"]) {
-		case "archives":
-?>
-<p>
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>"><?php _e('Latest Post'); ?></a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>#last_10"><?php _e('Last 10 Posts'); ?></a> |
-<?php _e('Archives'); ?>
-</p>
-
-<hr />
-
-<h2><?php _e('Archives by Month'); ?></h2>
-
-<ul>
-<?php
-// borrowed from b2archives.php
-			$arc_sql="SELECT DISTINCT YEAR(post_date), MONTH(post_date) FROM $tableposts "
-			        ."WHERE post_date < '$now' "
-			        ."AND post_status = 'publish' "
-			        ."ORDER BY post_date DESC";
-			$querycount++;
-			$arc_result=mysql_query($arc_sql) or die($arc_sql.'<br />'.mysql_error());
-			while($arc_row = mysql_fetch_array($arc_result)) {
-				$arc_year  = $arc_row['YEAR(post_date)'];
-				$arc_month = $arc_row['MONTH(post_date)'];
-				echo '<li><a href="'.$_SERVER['PHP_SELF'].'?view=month&y='.$arc_year.'&m='.$arc_month.'">';
-				echo $month[zeroise($arc_month,2)].' '.$arc_year;
-				echo '</a></li>'."\n";
-			}
-?>
-</ul>
-<?php
-			break;
-		case "month":
-			$selected_month = mktime(0, 0, 0, $_REQUEST["m"], 1, $_REQUEST["y"]);
-?>
-<p>
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>"><?php _e('Latest Post'); ?></a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>#last_10"><?php _e('Last 10 Posts'); ?></a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives"><?php _e('Archives'); ?></a> 
-</p>
-
-<hr />
-
-<h2><?php echo date("F Y", $selected_month); ?> <?php _e('Posts'); ?></h2>
-<ul>
-<?php
-			$month = mysql_query("SELECT ID, post_title, post_date "
-			                    ."FROM $tableposts "
-			                    ."WHERE MONTH(post_date) = '".$_REQUEST["m"]."' "
-			                    ."AND YEAR(post_date) = '".$_REQUEST["y"]."' "
-			                    ."AND post_status = 'publish' "
-			                    ."ORDER BY post_date DESC"
-			                    );
-			while ($post = mysql_fetch_array($month)) {
-				echo '<li><a href="'.$_SERVER['PHP_SELF'].'?p='.$post["ID"].'&more=1">'
-                    .stripslashes($post["post_title"])
-                    .'</a> ('.substr($post["post_date"],5,5).")\n";
-			}
-?>
-</ul>
-<?php
-			break;
-	}
-}
-else {
-?>
-<p>
-<?php
-	if ($latest == 1) {
-?>
-<?php _e('Latest Post'); ?> |
-<?php
+if (isset($_GET['ak_action'])) {
+	$url = parse_url(get_bloginfo('home'));
+	$domain = $url['host'];
+	if (!empty($url['path'])) {
+		$path = $url['path'];
 	}
 	else {
-?>
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>"><?php _e('Latest Post'); ?></a> |
-<?php
+		$path = '/';
 	}
-?>
-<a href="#last_10"><?php _e('Last 10 Posts'); ?></a> |
-<a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives"><?php _e('Archives'); ?></a> 
-</p>
-
-<hr />
-
-<?php /* // loop start */ ?>
-<?php if ($posts) { $i = 0; foreach ($posts as $post) { if ($i < 1) { $i++; start_wp(); ?>
-
-<p><?php previous_post_m('%','<b>Previous Post:</b> '); ?><br />
-<?php next_post_m('%','<b>Next Post:</b> '); ?></p>
-
-<h2><?php the_title(); ?></h2>
-
-<p><?php _e('Posted in:'); ?></p>
-
-<ul>
-<?php
-$cats = get_the_category();
-foreach ($cats as $dog) {
-?>
-	<li><?php print(htmlspecialchars($dog->cat_name)); ?></li>
-<?php
-}
-?>
-</ul>
-
-<?php
-$more = 1; // always show complete post;
-the_content(); 
-?>
-<?php link_pages("<br />Pages: ","<br />","number") ?>
-<p>
-<?php _e('posted by'); ?> <?php the_author() ?><br />
-<?php the_date() ?> @  <?php the_time() ?>
-</p>
-
-<?php
-// begin comments
-
-if (empty($post->post_password) || 
-    $HTTP_COOKIE_VARS['wp-postpass'] == $post->post_password) {  
-    // and it doesn't match the cookie
-
-	$comment_author = (empty($HTTP_COOKIE_VARS["comment_author"])) ? "" : $HTTP_COOKIE_VARS["comment_author"];
-	$comment_author_email = (empty($HTTP_COOKIE_VARS["comment_author"])) ? "" : trim($HTTP_COOKIE_VARS["comment_author_email"]);
-	$comment_author_url = (empty($HTTP_COOKIE_VARS["comment_author"])) ? "" : trim($HTTP_COOKIE_VARS["comment_author_url"]);
-	
-	$comments = $wpdb->get_results("SELECT * 
-	                                FROM $tablecomments 
-	                                WHERE comment_post_ID = '$id' 
-	                                AND comment_approved = '1'
-	                                ORDER BY comment_date"
-	                              );
-?>
-
-<h3><?php _e('Comments'); ?></h3>
-
-<ol id="comments">
-<?php 
-// this line is WordPress' motor, do not delete it.
-	if ($comments) {
-		foreach ($comments as $comment) {
-?>
-
-<li id="comment-<?php comment_ID() ?>">
-<?php comment_text() ?>
-<p><cite><?php comment_type(); ?> <?php _e('by'); ?> <?php comment_author_link() ?> <?php comment_date() ?> @ <a href="#comment-<?php comment_ID() ?>"><?php comment_time() ?></a></cite></p>
-</li>
-
-<?php /* end of the loop, don't delete */ 
-		} 
-	} 
-	else { 
-?>
-
-<li><?php _e('No comments on this post so far.'); ?></li>
-
-<?php /* if you delete this the sky will fall on your head */ 
-	} 
-?>
-</ol>
-
-<h3><?php _e('Add a comment'); ?></h3>
-
-<?php 
-	if ('open' == $post->comment_status) { 
-		if ( $user_ID ) {
-?>
-<p><?php _e('Logged in as'); ?> <strong><?php echo $user_identity; ?></strong>. <a href="<?php echo get_option('siteurl'); ?>/wp-login.php?action=logout">Logout &raquo;</a></p>
-
-<form action="<?php echo get_settings('siteurl'); ?>/wp-comments-post.php" method="post">
-
-	<p>
-	<?php _e('Comments:'); ?>
-	<br />
-	<textarea cols="40" rows="4" name="comment"></textarea>
-	</p>
-
-	<p>
-	<input type="submit" name="submit" value="<?php _e('Post Comment'); ?>" />
-	<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
-	<input type="hidden" name="redirect_to" value="<?php echo htmlspecialchars($HTTP_SERVER_VARS["REQUEST_URI"]); ?>" />
-	</p>
-
-</form>
-<?php
+	$redirect = false;
+	switch ($_GET['ak_action']) {
+		case 'reject_mobile':
+			setcookie(
+				'akm_mobile'
+				, 'false'
+				, time() + 300000
+				, $path
+				, $domain
+			);
+			$redirect = true;
+			break;
+		case 'accept_mobile':
+			setcookie(
+				'akm_mobile'
+				, 'true'
+				, time() + 300000
+				, $path
+				, $domain
+			);
+			$redirect = true;
+			break;
+	}
+	if ($redirect) {
+		if (!empty($_SERVER['HTTP_REFERER'])) {
+			$go = $_SERVER['HTTP_REFERER'];
 		}
 		else {
-?>
-
-<!-- form to add a comment -->
-
-<form action="<?php echo get_settings('siteurl'); ?>/wp-comments-post.php" method="post">
-
-	<p>
-	<?php _e('Your Name:'); ?>
-	<br />
-	<input type="text" name="author" value="<?php echo $comment_author ?>" size="20" />
-	<br />
-	<?php _e('Email:'); ?>
-	<br />
-	<input type="text" name="email" value="<?php echo $comment_author_email ?>" size="20" />
-	<br />
-	<?php _e('Web Site:'); ?>
-	<br />
-	<input type="text" name="url" value="<?php echo $comment_author_url ?>" size="20" />
-	<br />
-	<?php _e('Comments:'); ?>
-	<br />
-	<textarea cols="40" rows="4" name="comment"></textarea>
-	</p>
-
-	<p>
-	<input type="submit" name="submit" value="<?php _e('Post Comment'); ?>" />
-	<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
-	<input type="hidden" name="redirect_to" value="<?php echo htmlspecialchars($HTTP_SERVER_VARS["REQUEST_URI"]); ?>" />
-	</p>
-
-</form>
-<?php 
+			$go = get_bloginfo('home');
 		}
-	} 
-	else { // comments are closed 
-?>
-<p><?php _e('Sorry, comments are closed at this time.'); ?></p>
-<?php 
+		header('Location: '.$go);
+		die();
 	}
 }
-?>
 
-<p><?php previous_post_m('%','<b>'.__('Previous Post:').'</b> '); ?><br />
-<?php next_post_m('%','<b>'.__('Next Post:').'</b> '); ?></p>
-
-<?php // if you delete this the sky will fall on your head
-// this is just the end of the motor - don't touch that line either :)
-		}
-	}
+if (akm_mobile_redirect() && akm_check_mobile()) {
+	add_action('template', 'akm_template');
+	add_action('option_template', 'akm_template');
+	add_action('option_stylesheet', 'akm_template');
 }
-?> 
 
-<hr />
-
-<h2><?php _e('Last 10 posts:'); ?></h2>
-<ul id="last_10">
-<?php
-$last_10 = mysql_query("SELECT ID, post_title, post_date "
-                      ."FROM $tableposts "
-                      ."WHERE post_status = 'publish' "
-                      ."AND post_date < '$now' "
-                      ."ORDER BY post_date DESC "
-                      ."LIMIT 10"
-                      );
-while ($data = mysql_fetch_object($last_10)) {
-	if ($p == $data->ID) {
-		echo '	<li>'.$data->post_title.' ('.substr($data->post_date,5,5).")</li>\n";
-	}
-	else {
-		echo '	<li><a href="'.$HTTP_SERVER_VARS["PHP_SELF"].'?p='.$data->ID.'&amp;more=1">'
-            .stripslashes($data->post_title)
-            .'</a> ('.substr($data->post_date,5,5).")</li>\n";
-	}
+if (isset($_COOKIE['akm_mobile']) && $_COOKIE['akm_mobile'] == 'false') {
+	add_action('the_content', 'akm_mobile_available');
 }
+
 ?>
-</ul>
-
-<p><a href="<?php echo $HTTP_SERVER_VARS["PHP_SELF"]; ?>?view=archives"><?php _e('More Posts (Archives)'); ?></a></p>
-
-<?php
-// closes else from view if/switch
-}
-?>
-
-<p>Powered by <a href="http://wordpress.org"><b>WordPress</b></a>. <a href="http://www.alexking.org/software/wordpress/">WordPress Mobile Edition</a> available at alexking.org.</p>
-
-</body>
-</html>
