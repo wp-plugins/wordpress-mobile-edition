@@ -50,6 +50,7 @@ function akm_check_mobile() {
 		,'Elaine/3.0'
 		,'EudoraWeb'
 		,'hiptop'
+		,'MIDP-2.0'
 		,'MMEF20'
 		,'MOT-V'
 		,'NetFront'
@@ -71,6 +72,7 @@ function akm_check_mobile() {
 		,'Windows CE'
 		,'WinWAP'
 	);
+
 	foreach ($small_browsers as $browser) {
 		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser)) {
 			return true;
