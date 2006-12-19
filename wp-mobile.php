@@ -18,7 +18,7 @@
 /*
 Plugin Name: WordPress Mobile Edition
 Plugin URI: http://alexking.org/projects/wordpress
-Description: Show a mobile view of the post/page if the visitor is on a known mobile device.
+Description: Show a mobile view of the post/page if the visitor is on a known mobile device. Questions on configuration, etc.? Make sure to read the README.
 Author: Alex King
 Author URI: http://alexking.org
 Version: 2.0
@@ -28,6 +28,9 @@ $_SERVER['REQUEST_URI'] = ( isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_U
 
 function akm_check_mobile() {
 	if (!isset($_SERVER["HTTP_USER_AGENT"]) || (isset($_COOKIE['akm_mobile']) && $_COOKIE['akm_mobile'] == 'false')) {
+		return false;
+	}
+	if (akm_mobile_exclude()) {
 		return false;
 	}
 	$whitelist = array(
@@ -81,21 +84,20 @@ function akm_check_mobile() {
 	return false;
 }
 
-function akm_mobile_redirect() {
-	$redirect = true;
+function akm_mobile_exclude() {
+	$exclude = false;
 	$pages_to_exclude = array(
 		'wp-admin'
-		,'wp-mobile.php'
 		,'wp-comments-post.php'
 		,'wp-mail.php'
 		,'wp-login.php'
 	);
 	foreach ($pages_to_exclude as $exclude) {
 		if (strstr(strtolower($_SERVER['REQUEST_URI']), $exclude)) {
-			$redirect = false;
+			$exclude = true;
 		}
 	}
-	return $redirect;
+	return $exclude;
 }
 
 function akm_template($theme) {
@@ -193,7 +195,7 @@ if (isset($_GET['ak_action'])) {
 	}
 }
 
-if (akm_mobile_redirect() && akm_check_mobile()) {
+if (akm_check_mobile()) {
 	add_action('template', 'akm_template');
 	add_action('option_template', 'akm_template');
 	add_action('option_stylesheet', 'akm_template');
