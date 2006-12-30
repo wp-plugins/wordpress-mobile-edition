@@ -1,7 +1,6 @@
 <?php
 
 // WordPress Mobile Edition
-// version 2.0, 2006-11-03
 //
 // Copyright (c) 2002-2006 Alex King
 // http://alexking.org/projects/wordpress
@@ -58,6 +57,8 @@ function akm_check_mobile() {
 		,'MOT-V'
 		,'NetFront'
 		,'Newt'
+		,'Nintendo Wii'
+		,'Nitro' // Nintendo DS
 		,'Nokia'
 		,'Opera Mini'
 		,'Palm'
