@@ -102,7 +102,7 @@ function akm_mobile_exclude() {
 }
 
 function akm_template($theme) {
-	return 'wp-mobile';
+	return apply_filters('akm_template', 'wp-mobile');
 }
 
 function akm_mobile_available($content) {
