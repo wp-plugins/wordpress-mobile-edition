@@ -20,7 +20,7 @@ Plugin URI: http://alexking.org/projects/wordpress
 Description: Show a mobile view of the post/page if the visitor is on a known mobile device. Questions on configuration, etc.? Make sure to read the README.
 Author: Alex King
 Author URI: http://alexking.org
-Version: 2.0
+Version: 2.1dev
 */ 
 
 $_SERVER['REQUEST_URI'] = ( isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'] . (( isset($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '')));
@@ -31,6 +31,9 @@ function akm_check_mobile() {
 	}
 	if (akm_mobile_exclude()) {
 		return false;
+	}
+	if (isset($_COOKIE['akm_mobile']) && $_COOKIE['akm_mobile'] == 'true') {
+		return true;
 	}
 	$whitelist = array(
 		'Stand Alone/QNws'
@@ -62,6 +65,7 @@ function akm_check_mobile() {
 		,'Nokia'
 		,'Opera Mini'
 		,'Palm'
+		,'Playstation Portable'
 		,'portalmmm'
 		,'Proxinet'
 		,'ProxiNet'
@@ -173,6 +177,7 @@ if (isset($_GET['ak_action'])) {
 			);
 			$redirect = true;
 			break;
+		case 'force_mobile':
 		case 'accept_mobile':
 			setcookie(
 				'akm_mobile'
