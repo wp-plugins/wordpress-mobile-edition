@@ -55,6 +55,7 @@ function akm_check_mobile() {
 		,'Elaine/3.0'
 		,'EudoraWeb'
 		,'hiptop'
+		,'KYOCERA/WX310K'
 		,'MIDP-2.0'
 		,'MMEF20'
 		,'MOT-V'
