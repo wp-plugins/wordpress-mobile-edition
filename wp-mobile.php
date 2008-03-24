@@ -56,6 +56,7 @@ function akm_check_mobile() {
 		,'EudoraWeb'
 		,'hiptop'
 		,'KYOCERA/WX310K'
+		,'LG/U990'
 		,'MIDP-2.0'
 		,'MMEF20'
 		,'MOT-V'
