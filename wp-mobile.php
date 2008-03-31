@@ -2,7 +2,7 @@
 
 // WordPress Mobile Edition
 //
-// Copyright (c) 2002-2006 Alex King
+// Copyright (c) 2002-2008 Alex King
 // http://alexking.org/projects/wordpress
 //
 // Released under the GPL license
@@ -20,8 +20,22 @@ Plugin URI: http://alexking.org/projects/wordpress
 Description: Show a mobile view of the post/page if the visitor is on a known mobile device. Questions on configuration, etc.? Make sure to read the README.
 Author: Alex King
 Author URI: http://alexking.org
-Version: 2.1dev
+Version: 2.1
 */ 
+
+if (!function_exists('is_admin_page')) {
+	function is_admin_page() {
+		if (function_exists('is_admin')) {
+			return is_admin();
+		}
+		if (function_exists('check_admin_referer')) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
 
 $_SERVER['REQUEST_URI'] = ( isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'] . (( isset($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '')));
 
@@ -108,11 +122,35 @@ function akm_mobile_exclude() {
 }
 
 function akm_template($theme) {
-	return apply_filters('akm_template', 'wp-mobile');
+	if (akm_installed()) {
+		return apply_filters('akm_template', 'wp-mobile');
+	}
+	else {
+		return $theme;
+	}
+}
+
+function akm_installed() {
+	return is_dir(ABSPATH.'/wp-content/themes/wp-mobile');
+}
+
+function akm_misinstalled($content) {
+	return $content.'<p>WordPress Mobile Edition has been incorrectly installed. Please follow the steps in the README to install it correctly or disable the plugin.</p>';
+}
+
+if (is_admin_page() && !akm_installed()) {
+	global $wp_version;
+	if (isset($wp_version) && version_compare($wp_version, '2.5', '>=')) {
+		add_action('admin_notices', create_function( '', "echo '<div class=\"error\">WP Mobile is incorrectly installed. Please check the <a href=\"http://alexking.org/projects/wordpress/readme?project=wordpress-mobile-edition\">README</a>.</div>';" ) );
+	}
 }
 
 function akm_mobile_available($content) {
-	return $content.'<p><a href="'.get_bloginfo('wpurl').'/wp-admin/options-general.php?ak_action=accept_mobile">Return to the Mobile Edition</a>.</p>';
+	return $content.'<p><a href="'.get_bloginfo('wpurl').'/index.php?ak_action=accept_mobile">Return to the Mobile Edition</a>.</p>';
+}
+
+function akm_mobile_link() {
+	echo '<a href="'.get_bloginfo('wpurl').'/index.php?ak_action=force_mobile">Mobile Edition</a>';
 }
 
 if (!function_exists('ak_recent_posts')) {
@@ -158,50 +196,53 @@ Author URI: http://mtdewvirus.com/
 	}
 }
 
-if (isset($_GET['ak_action'])) {
-	$url = parse_url(get_bloginfo('home'));
-	$domain = $url['host'];
-	if (!empty($url['path'])) {
-		$path = $url['path'];
-	}
-	else {
-		$path = '/';
-	}
-	$redirect = false;
-	switch ($_GET['ak_action']) {
-		case 'reject_mobile':
-			setcookie(
-				'akm_mobile'
-				, 'false'
-				, time() + 300000
-				, $path
-				, $domain
-			);
-			$redirect = true;
-			break;
-		case 'force_mobile':
-		case 'accept_mobile':
-			setcookie(
-				'akm_mobile'
-				, 'true'
-				, time() + 300000
-				, $path
-				, $domain
-			);
-			$redirect = true;
-			break;
-	}
-	if ($redirect) {
-		if (!empty($_SERVER['HTTP_REFERER'])) {
-			$go = $_SERVER['HTTP_REFERER'];
+function akm_request_handler() {
+	if (isset($_GET['ak_action'])) {
+		$url = parse_url(get_bloginfo('home'));
+		$domain = $url['host'];
+		if (!empty($url['path'])) {
+			$path = $url['path'];
 		}
 		else {
-			$go = get_bloginfo('home');
+			$path = '/';
 		}
-		header('Location: '.$go);
-		die();
+		$redirect = false;
+		switch ($_GET['ak_action']) {
+			case 'reject_mobile':
+				setcookie(
+					'akm_mobile'
+					, 'false'
+					, time() + 300000
+					, $path
+					, $domain
+				);
+				$redirect = true;
+				break;
+			case 'force_mobile':
+			case 'accept_mobile':
+				setcookie(
+					'akm_mobile'
+					, 'true'
+					, time() + 300000
+					, $path
+					, $domain
+				);
+				$redirect = true;
+				break;
+		}
+		if ($redirect) {
+			if (!empty($_SERVER['HTTP_REFERER'])) {
+				$go = $_SERVER['HTTP_REFERER'];
+			}
+			else {
+				$go = get_bloginfo('home');
+			}
+			header('Location: '.$go);
+			die();
+		}
 	}
 }
+add_action('init', 'akm_request_handler');
 
 if (akm_check_mobile()) {
 	add_action('template', 'akm_template');

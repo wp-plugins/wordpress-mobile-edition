@@ -2,8 +2,8 @@
 Tags: mobile, pda, wireless, cellphone, phone
 Contributors: alexkingorg
 Minimum version: 1.5
-Tested with: 2.0.5
-Stable tag: 2.0
+Tested with: 2.5
+Stable tag: 2.1
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
 
@@ -28,9 +28,11 @@ No, it does not.
 Yes, it does.
 
 
-= I visited the site in a mobile browser and my theme was reset to default, why? =
+= Can I create a link that forces someone to see the mobile version? =
 
-Probably because you missed step 2 in the installation directions above. If the requested theme is not available, WordPress will reset your theme to the default.
+Yes, this is included as an experimental feature in version 2.1. The link can be added to your theme by using the akm_mobile_link() template tag:
+
+`<?php akm_mobile_link(); ?>`
 
 
 = Why are recent posts shown on every page? =
