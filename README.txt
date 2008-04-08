@@ -3,7 +3,7 @@ Tags: mobile, pda, wireless, cellphone, phone
 Contributors: alexkingorg
 Minimum version: 1.5
 Tested with: 2.3
-Stable tag: 2.0
+Stable tag: 2.1.1
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
 
