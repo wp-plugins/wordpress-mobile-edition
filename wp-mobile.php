@@ -20,7 +20,7 @@ Plugin URI: http://alexking.org/projects/wordpress
 Description: Show a mobile view of the post/page if the visitor is on a known mobile device. Questions on configuration, etc.? Make sure to read the README.
 Author: Alex King
 Author URI: http://alexking.org
-Version: 2.1
+Version: 2.1a
 */ 
 
 if (!function_exists('is_admin_page')) {
@@ -69,6 +69,7 @@ function akm_check_mobile() {
 		,'Elaine/3.0'
 		,'EudoraWeb'
 		,'hiptop'
+		,'IEMobile'
 		,'KYOCERA/WX310K'
 		,'LG/U990'
 		,'MIDP-2.0'
@@ -113,8 +114,8 @@ function akm_mobile_exclude() {
 		,'wp-mail.php'
 		,'wp-login.php'
 	);
-	foreach ($pages_to_exclude as $exclude) {
-		if (strstr(strtolower($_SERVER['REQUEST_URI']), $exclude)) {
+	foreach ($pages_to_exclude as $exclude_page) {
+		if (strstr(strtolower($_SERVER['REQUEST_URI']), $exclude_page)) {
 			$exclude = true;
 		}
 	}
@@ -132,10 +133,6 @@ function akm_template($theme) {
 
 function akm_installed() {
 	return is_dir(ABSPATH.'/wp-content/themes/wp-mobile');
-}
-
-function akm_misinstalled($content) {
-	return $content.'<p>WordPress Mobile Edition has been incorrectly installed. Please follow the steps in the README to install it correctly or disable the plugin.</p>';
 }
 
 if (is_admin_page() && !akm_installed()) {
