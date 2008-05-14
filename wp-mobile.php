@@ -82,7 +82,7 @@ function akm_check_mobile() {
 		,'Nokia'
 		,'Opera Mini'
 		,'Palm'
-		,'Playstation Portable'
+		,'PlayStation Portable'
 		,'portalmmm'
 		,'Proxinet'
 		,'ProxiNet'

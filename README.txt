@@ -50,6 +50,10 @@ then send me the results on that page along with the name of your device using m
 
 http://alexking.org/contact
 
+= How do I customize the display of the mobile interface? =
+
+The contents of the wp-mobile folder is a mobile theme for WordPress. Any changes you make there will affect the display of the mobile interface.
+
 
 == Examples ==
 
