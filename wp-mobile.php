@@ -72,7 +72,7 @@ function akm_check_mobile() {
 		,'IEMobile'
 		,'KYOCERA/WX310K'
 		,'LG/U990'
-		,'MIDP-2.0'
+		,'MIDP-2.'
 		,'MMEF20'
 		,'MOT-V'
 		,'NetFront'
