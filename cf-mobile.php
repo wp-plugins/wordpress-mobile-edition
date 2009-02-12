@@ -25,6 +25,8 @@ Author URI: http://crowdfavorite.com
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
+define('CF_MOBILE_THEME', 'wp-mobile');
+
 if (!defined('PLUGINDIR')) {
 	define('PLUGINDIR','wp-content/plugins');
 }
@@ -54,7 +56,7 @@ if (!function_exists('is_admin_page')) {
 
 register_activation_hook(CFMOBI_FILE, 'cfmobi_install');
 
-$cfmobi_mobile_browsers = array(
+$cfmobi_default_mobile_browsers = array(
 	'2.0 MMP',
 	'240x320',
 	'AvantGo',
@@ -95,7 +97,7 @@ $cfmobi_mobile_browsers = array(
 	'WinWAP',
 );
 
-$cfmobi_touch_browsers = array(
+$cfmobi_default_touch_browsers = array(
 	'iPhone',
 	'iPod',
 	'Android',
@@ -103,31 +105,27 @@ $cfmobi_touch_browsers = array(
 	'LG-TU915 Obigo', // LG touch browser
 );
 
+$mobile = explode("\n", trim(cfmobi_setting('cfmobi_mobile_browsers')));
+$cfmobi_mobile_browsers = apply_filters('cfmobi_mobile_browsers', $mobile);
+$touch = explode("\n", trim(cfmobi_setting('cfmobi_touch_browsers')));
+$cfmobi_touch_browsers = apply_filters('cfmobi_touch_browsers', $touch);
+
 function cfmobi_install() {
 	if (get_option('cfmobi_mobile_browsers') == '') {
-		update_option('cfmobi_mobile_browsers', $cfmobi_mobile_browsers);
+		update_option('cfmobi_mobile_browsers', implode("\n", $cfmobi_default_mobile_browsers));
 	}
 	if (get_option('cfmobi_touch_browsers') == '') {
-		update_option('cfmobi_touch_browsers', $cfmobi_touch_browsers);
+		update_option('cfmobi_touch_browsers', implode("\n", $cfmobi_default_touch_browsers));
 	}
 }
 
-// TODO: add reset button to set initial mobile browsers 
-
 function cfmobi_init() {
 	global $cfmobi_mobile_browsers, $cfmobi_touch_browsers;
-	$cfmobi_mobile_browsers = apply_filters('cfmobi_mobile_browsers', cfmobi_setting('cfmobi_mobile_browsers'));
-	$cfmobi_touch_browsers = apply_filters('cfmobi_mobile_browsers', cfmobi_setting('cfmobi_touch_browsers'));
-	if (is_admin_page() && !akm_installed()) {
+	if (is_admin_page() && !cfmobi_installed()) {
 		global $wp_version;
 		if (isset($wp_version) && version_compare($wp_version, '2.5', '>=')) {
-			add_action('admin_notices', create_function( '', "echo '<div class=\"error\">WP Mobile is incorrectly installed. Please check the <a href=\"http://alexking.org/projects/wordpress/readme?project=wordpress-mobile-edition\">README</a>.</div>';" ) );
+			add_action('admin_notices', create_function( '', "echo '<div class=\"error\"><p>WP Mobile is incorrectly installed. Please check the <a href=\"http://alexking.org/projects/wordpress/readme?project=wordpress-mobile-edition\">README</a>.</p></div>';" ) );
 		}
-	}
-	if (cfmobi_check_mobile()) {
-		add_action('template', 'cfmobi_template');
-		add_action('option_template', 'cfmobi_template');
-		add_action('option_stylesheet', 'cfmobi_template');
 	}
 	if (isset($_COOKIE['cf_mobile']) && $_COOKIE['cf_mobile'] == 'false') {
 		add_action('the_content', 'cfmobi_mobile_available');
@@ -144,17 +142,25 @@ function cfmobi_check_mobile() {
 		return true;
 	}
 	$browsers = array_merge($cfmobi_mobile_browsers, $cfmobi_touch_browsers);
-	foreach ($browsers as $browser) {
-		if (strstr($_SERVER["HTTP_USER_AGENT"], $browser)) {
-			return true;
+	if (count($browsers)) {
+		foreach ($browsers as $browser) {
+			if (!empty($browser) && strpos($_SERVER["HTTP_USER_AGENT"], trim($browser)) !== false) {
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
+if (cfmobi_check_mobile()) {
+	add_filter('template', 'cfmobi_template');
+	add_filter('option_template', 'cfmobi_template');
+	add_filter('option_stylesheet', 'cfmobi_template');
+}
+
 function cfmobi_template($theme) {
 	if (cfmobi_installed()) {
-		return apply_filters('cfmobi_template', 'wp-mobile');
+		return apply_filters('cfmobi_template', CF_MOBILE_THEME);
 	}
 	else {
 		return $theme;
@@ -162,11 +168,11 @@ function cfmobi_template($theme) {
 }
 
 function cfmobi_installed() {
-	return is_dir(ABSPATH.'/wp-content/themes/wp-mobile');
+	return is_dir(ABSPATH.'/wp-content/themes/'.CF_MOBILE_THEME);
 }
 
 function cfmobi_mobile_exit() {
-// TODO
+	echo '<p><a href="'.trailingslashit(get_bloginfo('home')).'?cf_action=reject_mobile">Exit the Mobile Edition</a> <span class="small">(view the standard browser version)</span>.</p>';
 }
 
 function cfmobi_mobile_available($content) {
@@ -191,6 +197,9 @@ function cfmobi_request_handler() {
 		}
 		$redirect = false;
 		switch ($_GET['cf_action']) {
+			case 'cfmobi_admin_js':
+				cfmobi_admin_js();
+				break;
 			case 'cfmobi_admin_css':
 				cfmobi_admin_css();
 				die();
@@ -239,6 +248,28 @@ function cfmobi_request_handler() {
 }
 add_action('init', 'cfmobi_request_handler');
 
+function cfmobi_admin_js() {
+	global $cfmobi_default_mobile_browsers, $cfmobi_default_touch_browsers;
+	header('Content-type: text/javascript');
+	$mobile = str_replace(array("'","\r", "\n"), array("\'", '', ''), implode('\\n', $cfmobi_default_mobile_browsers));
+	$touch = str_replace(array("'","\r", "\n"), array("\'", '', ''), implode('\\n', $cfmobi_default_touch_browsers));
+?>
+jQuery(function($) {
+	$('#cfmobi_mobile_reset').click(function() {
+		$('#cfmobi_mobile_browsers').val('<?php echo $mobile; ?>');
+		return false;
+	});
+	$('#cfmobi_touch_reset').click(function() {
+		$('#cfmobi_touch_browsers').val('<?php echo $touch; ?>');
+		return false;
+	});
+});
+<?php
+	die();
+}
+
+wp_enqueue_script('cfmobi_admin_js', trailingslashit(get_bloginfo('url')).'?cf_action=cfmobi_admin_js', array('jquery'));
+
 function cfmobi_admin_css() {
 	header('Content-type: text/css');
 ?>
@@ -259,6 +290,15 @@ fieldset.options div.option span.help {
 	font-size: 11px;
 	margin-left: 8px;
 }
+#cfmobi_mobile_browsers, #cfmobi_touch_browsers {
+	height: 200px;
+	width: 300px;
+}
+#cfmobi_mobile_reset, #cfmobi_touch_reset {
+	display: block;
+	font-size: 11px;
+	font-weight: normal;
+}
 <?php
 	die();
 }
@@ -271,13 +311,13 @@ add_action('admin_head', 'cfmobi_admin_head');
 $cfmobi_settings = array(
 	'cfmobi_mobile_browsers' => array(
 		'type' => 'textarea',
-		'label' => 'Mobile Browsers',
+		'label' => 'Mobile Browsers <a href="#" id="cfmobi_mobile_reset">Reset to Default</a>',
 		'default' => $cfmobi_mobile_browsers,
 		'help' => '',
 	),
 	'cfmobi_touch_browsers' => array(
 		'type' => 'textarea',
-		'label' => 'Touch Browsers',
+		'label' => 'Touch Browsers <a href="#" id="cfmobi_touch_reset">Reset to Default</a>',
 		'default' => $cfmobi_touch_browsers,
 		'help' => '(iPhone, Android G1, BlackBerry Storm, etc.)',
 	),
@@ -333,6 +373,9 @@ if (!function_exists('cf_settings_field')) {
 				$output .= '</select>'.$help;
 				break;
 			case 'textarea':
+				if (is_array($option)) {
+					$option = implode("\n", $option);
+				}
 				$output = $label.'<textarea name="'.$key.'" id="'.$key.'">'.htmlspecialchars($option).'</textarea>'.$help;
 				break;
 			case 'string':
@@ -402,6 +445,6 @@ if (!function_exists('get_snoopy')) {
 	}
 }
 
-//a:22:{s:11:"plugin_name";s:24:"WordPress Mobile Edition";s:10:"plugin_uri";s:42:"http://crowdfavorite.com/wordpress/plugins";s:18:"plugin_description";s:277:"Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.";s:14:"plugin_version";s:3:"3.0";s:6:"prefix";s:6:"cfmobi";s:8:"filename";s:13:"cf-mobile.php";s:12:"localization";s:9:"cf-mobile";s:14:"settings_title";s:24:"WordPress Mobile Edition";s:13:"settings_link";s:6:"Mobile";s:4:"init";s:1:"1";s:7:"install";s:1:"1";s:9:"post_edit";b:0;s:12:"comment_edit";b:0;s:6:"jquery";b:0;s:6:"wp_css";b:0;s:5:"wp_js";b:0;s:9:"admin_css";s:1:"1";s:8:"admin_js";b:0;s:15:"request_handler";s:1:"1";s:6:"snoopy";s:1:"1";s:11:"setting_cat";b:0;s:14:"setting_author";b:0;}
+//a:22:{s:11:"plugin_name";s:24:"WordPress Mobile Edition";s:10:"plugin_uri";s:42:"http://crowdfavorite.com/wordpress/plugins";s:18:"plugin_description";s:277:"Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.";s:14:"plugin_version";s:3:"3.0";s:6:"prefix";s:6:"cfmobi";s:8:"filename";s:13:"cf-mobile.php";s:12:"localization";s:9:"cf-mobile";s:14:"settings_title";s:24:"WordPress Mobile Edition";s:13:"settings_link";s:6:"Mobile";s:4:"init";s:1:"1";s:7:"install";s:1:"1";s:9:"post_edit";b:0;s:12:"comment_edit";b:0;s:6:"jquery";b:0;s:6:"wp_css";b:0;s:5:"wp_js";b:0;s:9:"admin_css";s:1:"1";s:8:"admin_js";s:1:"1";s:15:"request_handler";s:1:"1";s:6:"snoopy";s:1:"1";s:11:"setting_cat";b:0;s:14:"setting_author";b:0;}
 
 ?>
