@@ -59,6 +59,7 @@ register_activation_hook(CFMOBI_FILE, 'cfmobi_install');
 $cfmobi_default_mobile_browsers = array(
 	'2.0 MMP',
 	'240x320',
+	'400X240',
 	'AvantGo',
 	'BlackBerry',
 	'Blazer',
@@ -86,6 +87,7 @@ $cfmobi_default_mobile_browsers = array(
 	'Proxinet',
 	'ProxiNet',
 	'SHARP-TQ-GX10',
+	'SHG-i900',
 	'Small',
 	'SonyEricsson',
 	'Symbian OS',
@@ -103,6 +105,7 @@ $cfmobi_default_touch_browsers = array(
 	'Android',
 	'BlackBerry9530',
 	'LG-TU915 Obigo', // LG touch browser
+	'LGE VX',
 );
 
 $mobile = explode("\n", trim(cfmobi_setting('cfmobi_mobile_browsers')));
