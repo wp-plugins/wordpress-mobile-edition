@@ -227,6 +227,13 @@ function cfmobi_request_handler() {
 				);
 				$redirect = true;
 				break;
+			case 'cfmobi_who':
+				if (current_user_can('manage_options')) {
+					header("Content-type: text/plain");
+					echo sprintf(__('Browser: %s', 'cf-mobile'), strip_tags($_SERVER['HTTP_USER_AGENT']));
+					die();
+				}
+				break;
 		}
 		if ($redirect) {
 			if (!empty($_SERVER['HTTP_REFERER'])) {
@@ -399,6 +406,7 @@ function cfmobi_settings_form() {
 	<h2>'.__('WordPress Mobile Edition', 'cf-mobile').'</h2>
 	<form id="cfmobi_settings_form" name="cfmobi_settings_form" action="'.get_bloginfo('wpurl').'/wp-admin/options-general.php" method="post">
 		<input type="hidden" name="cf_action" value="cfmobi_update_settings" />
+		<p>'.__('Browsers that have a <a href="http://en.wikipedia.org/wiki/User_agent">User Agent</a> matching a key below will be shown the mobile version of your site instead of the normal theme.', 'cf-mobile').'</p>
 		<fieldset class="options">
 	');
 	foreach ($cfmobi_settings as $key => $config) {
@@ -406,6 +414,7 @@ function cfmobi_settings_form() {
 	}
 	print('
 		</fieldset>
+		<p>'.sprintf(__('To see the User Agent for your browser, <a href="%s">click here</a>.', 'cf-mobile'), trailingslashit(get_bloginfo('home')).'?cf_action=cfmobi_who').'</p>
 		<p class="submit">
 			<input type="submit" name="submit" value="'.__('Save Settings', 'cf-mobile').'" />
 		</p>
