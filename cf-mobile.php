@@ -18,7 +18,7 @@
 Plugin Name: WordPress Mobile Edition 
 Plugin URI: http://crowdfavorite.com/wordpress/plugins 
 Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
-Version: 3.0dev
+Version: 3.0b1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -56,70 +56,74 @@ if (!function_exists('is_admin_page')) {
 
 register_activation_hook(CFMOBI_FILE, 'cfmobi_install');
 
-$cfmobi_default_mobile_browsers = array(
-	'2.0 MMP',
-	'240x320',
-	'400X240',
-	'AvantGo',
-	'BlackBerry',
-	'Blazer',
-	'Cellphone',
-	'Danger',
-	'DoCoMo',
-	'Elaine/3.0',
-	'EudoraWeb',
-	'hiptop',
-	'IEMobile',
-	'KYOCERA/WX310K',
-	'LG/U990',
-	'MIDP-2.',
-	'MMEF20',
-	'MOT-V',
-	'NetFront',
-	'Newt',
-	'Nintendo Wii',
-	'Nitro', // Nintendo DS
-	'Nokia',
-	'Opera Mini',
-	'Palm',
-	'PlayStation Portable',
-	'portalmmm',
-	'Proxinet',
-	'ProxiNet',
-	'SHARP-TQ-GX10',
-	'SHG-i900',
-	'Small',
-	'SonyEricsson',
-	'Symbian OS',
-	'SymbianOS',
-	'TS21i-10',
-	'UP.Browser',
-	'UP.Link',
-	'Windows CE',
-	'WinWAP',
-);
+function cfmobi_default_browsers($type = 'mobile') {
+	$mobile = array(
+		'2.0 MMP',
+		'240x320',
+		'400X240',
+		'AvantGo',
+		'BlackBerry',
+		'Blazer',
+		'Cellphone',
+		'Danger',
+		'DoCoMo',
+		'Elaine/3.0',
+		'EudoraWeb',
+		'hiptop',
+		'IEMobile',
+		'KYOCERA/WX310K',
+		'LG/U990',
+		'MIDP-2.',
+		'MMEF20',
+		'MOT-V',
+		'NetFront',
+		'Newt',
+		'Nintendo Wii',
+		'Nitro', // Nintendo DS
+		'Nokia',
+		'Opera Mini',
+		'Palm',
+		'PlayStation Portable',
+		'portalmmm',
+		'Proxinet',
+		'ProxiNet',
+		'SHARP-TQ-GX10',
+		'SHG-i900',
+		'Small',
+		'SonyEricsson',
+		'Symbian OS',
+		'SymbianOS',
+		'TS21i-10',
+		'UP.Browser',
+		'UP.Link',
+		'Windows CE',
+		'WinWAP',
+	);
+	$touch = array(
+		'iPhone',
+		'iPod',
+		'Android',
+		'BlackBerry9530',
+		'LG-TU915 Obigo', // LG touch browser
+		'LGE VX',
+	);
+	switch ($type) {
+		case 'mobile':
+		case 'touch':
+			return $$type;
+	}
+}
 
-$cfmobi_default_touch_browsers = array(
-	'iPhone',
-	'iPod',
-	'Android',
-	'BlackBerry9530',
-	'LG-TU915 Obigo', // LG touch browser
-	'LGE VX',
-);
-
-$mobile = explode("\n", trim(cfmobi_setting('cfmobi_mobile_browsers')));
+$mobile = explode("\n", trim(get_option('cfmobi_mobile_browsers')));
 $cfmobi_mobile_browsers = apply_filters('cfmobi_mobile_browsers', $mobile);
-$touch = explode("\n", trim(cfmobi_setting('cfmobi_touch_browsers')));
+$touch = explode("\n", trim(get_option('cfmobi_touch_browsers')));
 $cfmobi_touch_browsers = apply_filters('cfmobi_touch_browsers', $touch);
 
 function cfmobi_install() {
-	if (get_option('cfmobi_mobile_browsers') == '') {
-		update_option('cfmobi_mobile_browsers', implode("\n", $cfmobi_default_mobile_browsers));
-	}
-	if (get_option('cfmobi_touch_browsers') == '') {
-		update_option('cfmobi_touch_browsers', implode("\n", $cfmobi_default_touch_browsers));
-	}
+	global $cfmobi_default_mobile_browsers;
+	add_option('cfmobi_mobile_browsers', implode("\n", cfmobi_default_browsers('mobile')));
+	global $cfmobi_default_touch_browsers;
+	add_option('cfmobi_touch_browsers', implode("\n", cfmobi_default_browsers('touch')));
 }
 
 function cfmobi_init() {
@@ -261,8 +265,8 @@ add_action('init', 'cfmobi_request_handler');
 function cfmobi_admin_js() {
 	global $cfmobi_default_mobile_browsers, $cfmobi_default_touch_browsers;
 	header('Content-type: text/javascript');
-	$mobile = str_replace(array("'","\r", "\n"), array("\'", '', ''), implode('\\n', $cfmobi_default_mobile_browsers));
-	$touch = str_replace(array("'","\r", "\n"), array("\'", '', ''), implode('\\n', $cfmobi_default_touch_browsers));
+	$mobile = str_replace(array("'","\r", "\n"), array("\'", '', ''), implode('\\n', cfmobi_default_browsers('mobile')));
+	$touch = str_replace(array("'","\r", "\n"), array("\'", '', ''), implode('\\n', cfmobi_default_browsers('touch')));
 ?>
 jQuery(function($) {
 	$('#cfmobi_mobile_reset').click(function() {
@@ -323,13 +327,13 @@ $cfmobi_settings = array(
 	'cfmobi_mobile_browsers' => array(
 		'type' => 'textarea',
 		'label' => 'Mobile Browsers <a href="#" id="cfmobi_mobile_reset">Reset to Default</a>',
-		'default' => $cfmobi_mobile_browsers,
+		'default' => cfmobi_default_browsers('mobile'),
 		'help' => '',
 	),
 	'cfmobi_touch_browsers' => array(
 		'type' => 'textarea',
 		'label' => 'Touch Browsers <a href="#" id="cfmobi_touch_reset">Reset to Default</a>',
-		'default' => $cfmobi_touch_browsers,
+		'default' => cfmobi_default_browsers('touch'),
 		'help' => '(iPhone, Android G1, BlackBerry Storm, etc.)',
 	),
 );
@@ -369,9 +373,6 @@ add_filter('plugin_action_links', 'cfmobi_plugin_action_links', 10, 2);
 if (!function_exists('cf_settings_field')) {
 	function cf_settings_field($key, $config) {
 		$option = get_option($key);
-		if (empty($option) && !empty($config['default'])) {
-			$option = $config['default'];
-		}
 		$label = '<label for="'.$key.'">'.$config['label'].'</label>';
 		$help = '<span class="help">'.$config['help'].'</span>';
 		switch ($config['type']) {
