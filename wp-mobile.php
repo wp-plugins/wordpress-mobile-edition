@@ -281,8 +281,9 @@ jQuery(function($) {
 <?php
 	die();
 }
-
-wp_enqueue_script('cfmobi_admin_js', trailingslashit(get_bloginfo('url')).'?cf_action=cfmobi_admin_js', array('jquery'));
+if (is_admin()) {
+	wp_enqueue_script('cfmobi_admin_js', trailingslashit(get_bloginfo('url')).'?cf_action=cfmobi_admin_js', array('jquery'));
+}
 
 function cfmobi_admin_css() {
 	header('Content-type: text/css');
