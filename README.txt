@@ -1,13 +1,13 @@
 === WordPress Mobile Edition ===
-Tags: mobile, pda, wireless, cellphone, phone
+Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry
 Contributors: alexkingorg
-Minimum version: 1.5
-Tested with: 2.3
+Minimum version: 2.3
+Tested with: 2.7.1
 Stable tag: 2.1.1
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
 
-Mobile browsers are automatically detected, there is no configuration needed. 
+Mobile browsers are automatically detected, the list of mobile browsers can be customized on the settings page. 
 
 == Installation ==
 
@@ -23,6 +23,18 @@ Mobile browsers are automatically detected, there is no configuration needed.
 No, it does not.
 
 
+= Does this support iPhones and other "touch" browsers? =
+
+Yes, as of version 3.0. There is a customized interface for advanced mobile browsers and special styling to make things "finger-sized" for touch browsers.
+
+
+= My mobile device isn't automatically detected, what do I do? =
+
+Visit the settings page and use the link there to identify your mobile browser's User Agent.
+
+Then add that to the list of mobile browsers in your settings.
+
+
 = Does this support pages too? =
 
 Yes, it does.
@@ -32,7 +44,7 @@ Yes, it does.
 
 Yes, this is included as an experimental feature in version 2.1. The link can be added to your theme by using the akm_mobile_link() template tag:
 
-`<?php akm_mobile_link(); ?>`
+`<?php in (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link(); } ?>`
 
 
 = Why are recent posts shown on every page? =
@@ -40,19 +52,9 @@ Yes, this is included as an experimental feature in version 2.1. The link can be
 This is a feature of the plugin to allow easy access to recent content.
 
 
-= My mobile device isn't automatically detected, what do I do? =
-
-Visit this page:
-
-http://alexking.org/who.php
-
-then send me the results on that page along with the name of your device using my contact form:
-
-http://alexking.org/contact
-
 = How do I customize the display of the mobile interface? =
 
-The contents of the wp-mobile folder is a mobile theme for WordPress. Any changes you make there will affect the display of the mobile interface.
+The contents of the wp-mobile folder are a standard WordPress theme. Any changes you make there will affect the display of the mobile interface.
 
 
 == Examples ==
