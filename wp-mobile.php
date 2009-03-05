@@ -33,11 +33,11 @@ if (!defined('PLUGINDIR')) {
 
 load_plugin_textdomain('cf-mobile');
 
-if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-mobile.php')) {
-	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-mobile.php');
+if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile.php')) {
+	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile.php');
 }
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'cf-mobile/cf-mobile.php')) {
-	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'cf-mobile/cf-mobile.php');
+else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile/wp-mobile.php')) {
+	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile/wp-mobile.php');
 }
 
 if (!function_exists('is_admin_page')) {
@@ -254,7 +254,7 @@ function cfmobi_request_handler() {
 		switch ($_POST['cf_action']) {
 			case 'cfmobi_update_settings':
 				cfmobi_save_settings();
-				wp_redirect(trailingslashit(get_bloginfo('wpurl')).'wp-admin/options-general.php?page=cf-mobile.php&updated=true');
+				wp_redirect(trailingslashit(get_bloginfo('wpurl')).'wp-admin/options-general.php?page=wp-mobile.php&updated=true');
 				die();
 				break;
 		}
@@ -459,6 +459,6 @@ if (!function_exists('get_snoopy')) {
 	}
 }
 
-//a:22:{s:11:"plugin_name";s:24:"WordPress Mobile Edition";s:10:"plugin_uri";s:42:"http://crowdfavorite.com/wordpress/plugins";s:18:"plugin_description";s:277:"Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.";s:14:"plugin_version";s:3:"3.0";s:6:"prefix";s:6:"cfmobi";s:8:"filename";s:13:"cf-mobile.php";s:12:"localization";s:9:"cf-mobile";s:14:"settings_title";s:24:"WordPress Mobile Edition";s:13:"settings_link";s:6:"Mobile";s:4:"init";s:1:"1";s:7:"install";s:1:"1";s:9:"post_edit";b:0;s:12:"comment_edit";b:0;s:6:"jquery";b:0;s:6:"wp_css";b:0;s:5:"wp_js";b:0;s:9:"admin_css";s:1:"1";s:8:"admin_js";s:1:"1";s:15:"request_handler";s:1:"1";s:6:"snoopy";s:1:"1";s:11:"setting_cat";b:0;s:14:"setting_author";b:0;}
+//a:22:{s:11:"plugin_name";s:24:"WordPress Mobile Edition";s:10:"plugin_uri";s:42:"http://crowdfavorite.com/wordpress/plugins";s:18:"plugin_description";s:277:"Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.";s:14:"plugin_version";s:3:"3.0";s:6:"prefix";s:6:"cfmobi";s:8:"filename";s:13:"wp-mobile.php";s:12:"localization";s:9:"cf-mobile";s:14:"settings_title";s:24:"WordPress Mobile Edition";s:13:"settings_link";s:6:"Mobile";s:4:"init";s:1:"1";s:7:"install";s:1:"1";s:9:"post_edit";b:0;s:12:"comment_edit";b:0;s:6:"jquery";b:0;s:6:"wp_css";b:0;s:5:"wp_js";b:0;s:9:"admin_css";s:1:"1";s:8:"admin_js";s:1:"1";s:15:"request_handler";s:1:"1";s:6:"snoopy";s:1:"1";s:11:"setting_cat";b:0;s:14:"setting_author";b:0;}
 
 ?>
