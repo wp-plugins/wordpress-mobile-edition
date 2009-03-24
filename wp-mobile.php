@@ -16,7 +16,7 @@
 
 /*
 Plugin Name: WordPress Mobile Edition 
-Plugin URI: http://crowdfavorite.com/wordpress/plugins 
+Plugin URI: http://crowdfavorite.com/wordpress/ 
 Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
 Version: 3.0
 Author: Crowd Favorite
