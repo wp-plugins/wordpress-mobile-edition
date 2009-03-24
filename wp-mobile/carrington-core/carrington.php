@@ -51,10 +51,7 @@ add_action('wp_footer', 'cfct_wp_footer');
 function cfct_about_text() {
 	$about_text = get_option('cfct_about_text');
 	if (!empty($about_text)) {
-		$about_text = wptexturize($about_text);
-		$about_text = convert_smilies($about_text);
-		$about_text = convert_chars($about_text);
-		$about_text = wpautop($about_text);
+		$about_text = cfct_basic_content_formatting($about_text);
 	}
 	else {
 		global $post;
@@ -69,6 +66,23 @@ function cfct_about_text() {
 		add_filter('the_excerpt', 'st_add_widget');
 	}
 	return $about_text;
+}
+
+function cfct_get_custom_colors($type = 'option') {
+	global $cfct_color_options;
+	$colors = array();
+	foreach ($cfct_color_options as $option => $value) {
+		switch ($type) {
+			case 'preview':
+				!empty($_GET[$option]) ? $colors[$option] = strip_tags(stripslashes($_GET[$option])) : $colors[$option] = '';
+				break;
+			case 'option':
+			default:
+				$colors[$option] = cfct_get_option($option);
+				break;
+		}
+	}
+	return $colors;
 }
 
 if (!defined('CFCT_DEBUG')) {

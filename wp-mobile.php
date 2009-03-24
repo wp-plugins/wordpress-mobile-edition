@@ -18,7 +18,7 @@
 Plugin Name: WordPress Mobile Edition 
 Plugin URI: http://crowdfavorite.com/wordpress/plugins 
 Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
-Version: 3.0b1
+Version: 3.0
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -183,11 +183,16 @@ function cfmobi_mobile_exit() {
 }
 
 function cfmobi_mobile_available($content) {
-	return $content.'<p><a href="'.trailingslashit(get_bloginfo('home')).'?cf_action=show_mobile">Return to the Mobile Edition</a>.</p>';
+	if (!defined('WPCACHEHOME')) {
+		$content = $content.'<p><a href="'.trailingslashit(get_bloginfo('home')).'?cf_action=show_mobile">Return to the Mobile Edition</a>.</p>';
+	}
+	return $content;
 }
 
 function cfmobi_mobile_link() {
-	echo '<a href="'.trailingslashit(get_bloginfo('home')).'?cf_action=show_mobile">Mobile Edition</a>';
+	if (!defined('WPCACHEHOME')) {
+		echo '<a href="'.trailingslashit(get_bloginfo('home')).'?cf_action=show_mobile">Mobile Edition</a>';
+	}
 }
 
 // TODO - add sidebar widget for link, with some sort of graphic?
