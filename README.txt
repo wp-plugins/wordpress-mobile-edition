@@ -1,5 +1,5 @@
 === WordPress Mobile Edition ===
-Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry
+Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry, carrington
 Contributors: alexkingorg
 Minimum version: 2.3
 Tested with: 2.7.1
@@ -17,6 +17,11 @@ Mobile browsers are automatically detected, the list of mobile browsers can be c
 
 
 == Frequently Asked Questions ==
+
+= Is this compatible with WP (Super) Cache? =
+
+Yes, it is compatible with WP Super Cache 0.9 (using WP Cache mode).
+
 
 = Does this create a mobile admin interface too? =
 
@@ -46,6 +51,8 @@ Yes, this is included as an experimental feature in version 2.1. The link can be
 
 `<?php in (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link(); } ?>`
 
+Note that this does not work if you have WP Cache enabled.
+
 
 = Why are recent posts shown on every page? =
 
@@ -59,4 +66,4 @@ The contents of the wp-mobile folder are a standard WordPress theme. Any changes
 
 == Examples ==
 
-You can see this in action on my site: http://alexking.org/
+You can see the mobile theme in action here: http://mobile.carringtontheme.com
