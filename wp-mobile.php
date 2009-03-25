@@ -423,7 +423,7 @@ function cfmobi_settings_form() {
 		</fieldset>
 		<p>'.sprintf(__('To see the User Agent for your browser, <a href="%s">click here</a>.', 'cf-mobile'), trailingslashit(get_bloginfo('home')).'?cf_action=cfmobi_who').'</p>
 		<p class="submit">
-			<input type="submit" name="submit" value="'.__('Save Settings', 'cf-mobile').'" />
+			<input type="submit" name="submit" class="button-primary" value="'.__('Save Settings', 'cf-mobile').'" />
 		</p>
 	</form>
 </div>
