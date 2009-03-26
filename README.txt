@@ -3,7 +3,7 @@ Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, b
 Contributors: alexkingorg
 Minimum version: 2.3
 Tested with: 2.7.1
-Stable tag: 3.0
+Stable tag: 3.0.1
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
 
@@ -38,6 +38,11 @@ Yes, as of version 3.0. There is a customized interface for advanced mobile brow
 Visit the settings page and use the link there to identify your mobile browser's User Agent.
 
 Then add that to the list of mobile browsers in your settings.
+
+
+= Does this conflict with other iPhone theme plugins? =
+
+Not fundamentally. If you remove the iPhone from the list of detected browsers, then the other iPhone theme should work as normal.
 
 
 = Does this support pages too? =
