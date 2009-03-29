@@ -18,14 +18,14 @@
 Plugin Name: WordPress Mobile Edition 
 Plugin URI: http://crowdfavorite.com/wordpress/ 
 Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
-Version: 3.0.1
+Version: 3.0.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('CF_MOBILE_THEME', 'wp-mobile');
+define('CF_MOBILE_THEME', 'carrington-mobile');
 
 if (!defined('PLUGINDIR')) {
 	define('PLUGINDIR','wp-content/plugins');
@@ -36,8 +36,8 @@ load_plugin_textdomain('cf-mobile');
 if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile.php')) {
 	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile.php');
 }
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile/wp-mobile.php')) {
-	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'wp-mobile/wp-mobile.php');
+else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'wordpress-mobile-edition/wp-mobile.php')) {
+	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'wordpress-mobile-edition/wp-mobile.php');
 }
 
 if (!function_exists('is_admin_page')) {
@@ -69,6 +69,7 @@ function cfmobi_default_browsers($type = 'mobile') {
 		'DoCoMo',
 		'Elaine/3.0',
 		'EudoraWeb',
+		'Googlebot-Mobile',
 		'hiptop',
 		'IEMobile',
 		'KYOCERA/WX310K',
@@ -98,6 +99,7 @@ function cfmobi_default_browsers($type = 'mobile') {
 		'UP.Link',
 		'Windows CE',
 		'WinWAP',
+		'YahooSeeker/M1A1-R2D2',
 	);
 	$touch = array(
 		'iPhone',
