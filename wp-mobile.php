@@ -18,14 +18,14 @@
 Plugin Name: WordPress Mobile Edition 
 Plugin URI: http://crowdfavorite.com/wordpress/ 
 Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
-Version: 3.0.2
+Version: 3.0.3
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
-define('CF_MOBILE_THEME', 'carrington-mobile');
+define('CF_MOBILE_THEME', 'carrington-mobile-1.0.1');
 
 if (!defined('PLUGINDIR')) {
 	define('PLUGINDIR','wp-content/plugins');
