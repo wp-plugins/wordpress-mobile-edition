@@ -3,7 +3,7 @@ Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, b
 Contributors: alexkingorg
 Minimum version: 2.3
 Tested with: 2.7.1
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
 
@@ -12,11 +12,16 @@ Mobile browsers are automatically detected, the list of mobile browsers can be c
 == Installation ==
 
 1. Drop the wp-mobile.php file in your wp-content/plugins directory
-2. Drop the carrington-mobile directory in your wp-content/themes directory
+2. Drop the carrington-mobile-1.0.1 directory in your wp-content/themes directory
 3. Click the 'Activate' link for WordPress Mobile Edition on your Plugins page (in the WordPress admin interface)
 
 
 == Frequently Asked Questions ==
+
+= Is this compatible with the WP plugin auto-upgrade feature? =
+
+No. The mobile theme needs to be moved to your themes directory and the WP plugin auto-upgrade does not do this. For this reason, please follow the installation instructions here.
+
 
 = Is this compatible with WP (Super) Cache? =
 
