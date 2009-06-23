@@ -18,7 +18,7 @@
 Plugin Name: WordPress Mobile Edition 
 Plugin URI: http://crowdfavorite.com/wordpress/ 
 Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
-Version: 3.0.5
+Version: 3.1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -146,21 +146,25 @@ add_action('init', 'cfmobi_init');
 
 function cfmobi_check_mobile() {
 	global $cfmobi_mobile_browsers, $cfmobi_touch_browsers;
+	$mobile = null;
 	if (!isset($_SERVER["HTTP_USER_AGENT"]) || (isset($_COOKIE['cf_mobile']) && $_COOKIE['cf_mobile'] == 'false')) {
-		return false;
+		$mobile = false;
 	}
 	else if (isset($_COOKIE['cf_mobile']) && $_COOKIE['cf_mobile'] == 'true') {
-		return true;
+		$mobile = true;
 	}
 	$browsers = array_merge($cfmobi_mobile_browsers, $cfmobi_touch_browsers);
-	if (count($browsers)) {
+	if (is_null($mobile) && count($browsers)) {
 		foreach ($browsers as $browser) {
 			if (!empty($browser) && strpos($_SERVER["HTTP_USER_AGENT"], trim($browser)) !== false) {
-				return true;
+				$mobile = true;
 			}
 		}
 	}
-	return false;
+	if (is_null($mobile)) {
+		$mobile = false;
+	}
+	return apply_filters('cfmobi_check_mobile', $mobile);
 }
 
 if (cfmobi_check_mobile()) {
@@ -411,7 +415,6 @@ if (!function_exists('cf_settings_field')) {
 
 function cfmobi_settings_form() {
 	global $cfmobi_settings;
-
 	print('
 <div class="wrap">
 	<h2>'.__('WordPress Mobile Edition', 'cf-mobile').'</h2>
@@ -432,6 +435,7 @@ function cfmobi_settings_form() {
 	</form>
 </div>
 	');
+	do_action('cfmobi_settings_form');
 }
 
 function cfmobi_save_settings() {
