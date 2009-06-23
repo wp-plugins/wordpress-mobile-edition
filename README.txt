@@ -2,7 +2,7 @@
 Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry, carrington
 Contributors: alexkingorg
 Minimum version: 2.3
-Tested with: 2.7.1
+Tested with: 2.8
 Stable tag: 3.0.5
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
@@ -82,3 +82,12 @@ The contents of the wp-mobile folder are a standard WordPress theme. Any changes
 == Examples ==
 
 You can see the mobile theme in action here: http://mobile.carringtontheme.com
+
+
+== Changelog ==
+
+= 3.1 =
+
+- Added changelog
+- Added filter to enable other plugins to participate in mobile checking
+- Added hook to enable other plugins to add to the settings page

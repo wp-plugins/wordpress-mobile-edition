@@ -1,5 +1,14 @@
 <?php
 
+/*
+Plugin Name: WordPress Mobile Edition 
+Plugin URI: http://crowdfavorite.com/wordpress/ 
+Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
+Version: 3.1
+Author: Crowd Favorite
+Author URI: http://crowdfavorite.com
+*/
+
 // WordPress Mobile Edition
 //
 // Copyright (c) 2002-2009 Crowd Favorite, Ltd.
@@ -13,15 +22,6 @@
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 // *****************************************************************
-
-/*
-Plugin Name: WordPress Mobile Edition 
-Plugin URI: http://crowdfavorite.com/wordpress/ 
-Description: Show your mobile visitors a site presentation designed just for them. Rich experience for iPhone, Android, etc. and clean simple formatting for less capable mobile browsers. Cache-friendly with a Carrington-based theme, and progressive enhancement for advanced mobile browsers.  
-Version: 3.1
-Author: Crowd Favorite
-Author URI: http://crowdfavorite.com
-*/
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
