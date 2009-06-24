@@ -40,20 +40,6 @@ else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'wordpress-mobile-edition/wp
 	define('CFMOBI_FILE', trailingslashit(ABSPATH.PLUGINDIR).'wordpress-mobile-edition/wp-mobile.php');
 }
 
-if (!function_exists('is_admin_page')) {
-	function is_admin_page() {
-		if (function_exists('is_admin')) {
-			return is_admin();
-		}
-		if (function_exists('check_admin_referer')) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-}
-
 register_activation_hook(CFMOBI_FILE, 'cfmobi_install');
 
 function cfmobi_default_browsers($type = 'mobile') {
@@ -110,6 +96,7 @@ function cfmobi_default_browsers($type = 'mobile') {
 		'LG-TU915 Obigo', // LG touch browser
 		'LGE VX',
 		'webOS', // Palm Pre, etc.
+		'Nokia5800',
 	);
 	switch ($type) {
 		case 'mobile':
@@ -132,7 +119,7 @@ function cfmobi_install() {
 
 function cfmobi_init() {
 	global $cfmobi_mobile_browsers, $cfmobi_touch_browsers;
-	if (is_admin_page() && !cfmobi_installed()) {
+	if (is_admin() && !cfmobi_installed()) {
 		global $wp_version;
 		if (isset($wp_version) && version_compare($wp_version, '2.5', '>=')) {
 			add_action('admin_notices', create_function( '', "echo '<div class=\"error\"><p>WP Mobile is incorrectly installed. Please check the <a href=\"http://alexking.org/projects/wordpress/readme?project=wordpress-mobile-edition\">README</a>.</p></div>';" ) );

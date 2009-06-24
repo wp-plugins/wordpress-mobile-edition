@@ -84,6 +84,27 @@ The contents of the wp-mobile folder are a standard WordPress theme. Any changes
 You can see the mobile theme in action here: http://mobile.carringtontheme.com
 
 
+== API ==
+
+There is a filter `cfmobi_check_mobile` that allows you to affect if a mobile browser is detected.
+
+`function your_mobile_check_function($mobile_status) {
+
+	// do your logic, set $mobile_status to true/false as needed
+	
+	return $mobile_status;
+}
+add_filter('cfmobi_check_mobile', 'your_mobile_check_function');`
+
+
+There is an action `cfmobi_settings_form` that allows you to add to the settings page for this plugin. Handling form posts and other activities from anything you add to this form should be done in your plugin.
+
+`function your_settings_form() {
+	// create your form here - don't forget to catch the form submission as well
+}
+add_action('cfmobi_settings_form', 'your_settings_form');`
+
+
 == Changelog ==
 
 = 3.1 =
