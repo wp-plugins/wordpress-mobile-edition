@@ -119,6 +119,12 @@ function cfmobi_install() {
 
 function cfmobi_init() {
 	global $cfmobi_mobile_browsers, $cfmobi_touch_browsers;
+	if (!is_array($cfmobi_mobile_browsers)) {
+		$cfmobi_mobile_browsers = cfmobi_default_browsers('mobile');
+	}
+	if (!is_array($cfmobi_touch_browsers)) {
+		$cfmobi_touch_browsers = cfmobi_default_browsers('touch');
+	}
 	if (is_admin() && !cfmobi_installed()) {
 		global $wp_version;
 		if (isset($wp_version) && version_compare($wp_version, '2.5', '>=')) {
@@ -170,7 +176,8 @@ function cfmobi_template($theme) {
 }
 
 function cfmobi_installed() {
-	return is_dir(ABSPATH.'/wp-content/themes/'.CF_MOBILE_THEME);
+	function_exists('get_theme_root') ? $theme_root = trailingslashit(get_theme_root()) : $theme_root = ABSPATH.'/wp-content/themes/';
+	return is_dir($theme_root.CF_MOBILE_THEME);
 }
 
 function cfmobi_mobile_exit() {
