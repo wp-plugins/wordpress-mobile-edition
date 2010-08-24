@@ -1,8 +1,8 @@
-## comments/
+## single/
 
-This directory holds templates for displaying the comment loop and the comment form - what is typically called in by WordPress's `comment_template()` function.
+This directory holds top level templates for "single" post pages. These files should call `the_header()`, `the_sidebar()`, `the_footer()`, `cfct_loop()` and `cfct_comments()` to include the other parts of the page.
 
-This level of abstraction us useful to be able to load in the comments and new comment form for a post/page via AJAX if desired.
+All General Context template filenames apply here, but in reality only single.php and single-{Post Context}.php files will be used as the General Context must fall to "single" to look for templates here.
 
 
 ## General Context
@@ -20,7 +20,7 @@ By default, conditions are checked in this order:
 3. category
 4. tag
 5. single
-6. default (home, search, archivem 404, etc.)
+6. default (home, search, archive, 404, etc.)
 
 This can be altered using the `cfct_general_match_order` hook.
 
@@ -31,11 +31,11 @@ This can be altered using the `cfct_general_match_order` hook.
 - *archive.php* - Used for date archives or if there are no specific category, author or tag templates.
 - *author.php* - Used for author archive lists.
 - *author-{username}.php* - Used when the post/page is authored by a specific user. For example, a template with a file name of _author-jsmith.php_ would be used for a post/page by user _jsmith_. Any WordPress username can take the place of {username} in the file name.
+- *role-{rolename}.php - Used when the post author has a particular role. This might be the role of _contributor_, _author_, _editor_, etc. and use a file of _role-contributor.php_, _role_author.php_, etc. where the role name takes the place of the {rolename} in the file name.
 - *category.php* - Used for category archive lists.
 - *cat-{slug}.php* - Used fr displaying a given category. The category is matched by the "slug" - for example a post in category "General" (with a category slug of "general") could use a template of _cat-general.php_.
 - *home.php* - Used when on the home page.
 - *page.php* - Used for pages that do not match any other contextual templates.
-- *role-{rolename}.php
 - *search.php* - Used when displaying search results.
 - *single.php* - Used for single post pages.
 - *single-{content context filenames}.php* - Used for single post pages.

@@ -59,7 +59,10 @@ function cfct_default_file($dir) {
 
 function cfct_context() {
 	$context = 'home';
-	if (is_page()) {
+	if (is_home() || is_front_page()) {
+		$context = 'home';
+	}
+	else if (is_page()) {
 		$context = 'page';
 	}
 	else if (is_single()) {
@@ -83,10 +86,6 @@ function cfct_context() {
 	}
 	else if (is_search()) {
 		$context = 'search';
-	}
-	else if (is_home()) {
-		$context = 'home';
-		// TODO - check page #
 	}
 	else if (is_404()) {
 		$context = '404';
@@ -221,8 +220,10 @@ function cfct_choose_general_template($dir) {
 	);
 	$new_exec_order = apply_filters('cfct_general_match_order', $exec_order);
 	$files = cfct_files(CFCT_PATH.$dir);
-	foreach ($new_exec_order as $func) {
-		$func_name = 'cfct_choose_general_template_'.$func;
+	foreach ($new_exec_order as $func_name) {
+		if (!function_exists($func_name)) {
+			$func_name = 'cfct_choose_general_template_'.$func_name;
+		}
 		if (function_exists($func_name)) {
 			$filename = $func_name($dir, $files);
 			if ($filename != false) {
@@ -534,6 +535,10 @@ function cfct_choose_comment_template_default($files) {
 }
 
 function cfct_files($path) {
+	$files = apply_filters('cfct_files_'.$path, false);
+	if ($files) {
+		return $files;
+	}
 	$files = wp_cache_get('cfct_files_'.$path, 'cfct');
 	if ($files) {
 		return $files;

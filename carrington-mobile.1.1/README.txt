@@ -9,6 +9,13 @@ http://www.opensource.org/licenses/gpl-license.php
 
 ---
 
+## Online Developer Resources
+
+Please see the latest online developer resources for Carrington here:
+
+http://carringtontheme.com/developers/
+
+
 ## What is Carrington?
 
 1. A collection of elegant, high-end WordPress themes for end-users.
@@ -103,6 +110,7 @@ The Carrington core is a theme framework, not a parent/child theme system. It in
 `cfct_post_gallery_columns` - set the number of columns to show in the gallery.
 `gallery_style` - retained from the WP function code copied in and altered for gallery display.
 `cfct_option_defaults` - allows you to set defaults (alter/add/etc.) for Carrington options.
+`cfct_files_{path}` - allows you to define the available files for a path.
 
 
 ### Actions

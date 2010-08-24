@@ -1,18 +1,19 @@
 === WordPress Mobile Edition ===
 Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry, carrington
 Contributors: alexkingorg
-Minimum version: 2.3
-Tested with: 2.8
-Stable tag: 3.1
+Minimum version: 2.8
+Tested with: 3.0.1
+Stable tag: 3.2
 
 WordPress Mobile Edition is a plugin that shows an interface designed for a mobile device when visitors come to your site on a mobile device.
 
 Mobile browsers are automatically detected, the list of mobile browsers can be customized on the settings page. 
 
+
 == Installation ==
 
 1. Drop the wp-mobile.php file in your wp-content/plugins directory
-2. Drop the carrington-mobile-(version #) directory in your wp-content/themes directory
+2. Drop the carrington-mobile.(version #) directory in your wp-content/themes directory
 3. Click the 'Activate' link for WordPress Mobile Edition on your Plugins page (in the WordPress admin interface)
 
 
@@ -62,9 +63,13 @@ Yes, it does.
 
 = Can I create a link that forces someone to see the mobile version? =
 
-Yes, this is included as an experimental feature in version 2.1. The link can be added to your theme by using the akm_mobile_link() template tag:
+Yes, this is included as an experimental feature in version 2.1. The link can be added to your theme by using the cfmobi_mobile_link() template tag:
 
-`<?php in (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link(); } ?>`
+`<?php if (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link(); } ?>`
+
+If you would prefer you own link text:
+
+`<?php if (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link('Link Text'); } ?>`
 
 Note that this does not work if you have WP Cache enabled.
 
@@ -107,8 +112,82 @@ add_action('cfmobi_settings_form', 'your_settings_form');`
 
 == Changelog ==
 
+= 3.2 =
+
+- Updated to carrington-mobile.1.1
+- Updated changelog for previous versions
+- Added additional security
+- Support for non traditional directory structures
+- Created a working-html directory
+- Added the option of custom link text for clfmobi_mobile_link()
+- Included options for default Exit and Return mobile version text. 
+
 = 3.1 =
 
 - Added changelog
 - Added filter to enable other plugins to participate in mobile checking
 - Added hook to enable other plugins to add to the settings page
+
+
+= 3.0.5 =
+
+- Updated Carrington mobile theme
+- Added default support for webOS
+
+
+= 3.0.4 =
+
+- Updated README FAQ
+
+
+= 3.0.3 =
+
+- Support for Carrington mobile theme versioning
+
+
+= 3.0.2 =
+
+- Default support for google and yahoo mobile crawlers
+- Check to see where the plugin file is located  /plugins or /plugins/wordpress-mobile-edition
+
+
+= 3.0.1 =
+
+- Readme update
+
+
+= 3.0 =
+
+- Compatibility with WP Super cache
+- Restructuring of how the plugin works
+- Added a theme based on Carrington mobile to display the mobile version
+- Created an options page to add custom user agents
+
+
+= 2.1 =
+
+- Added custom request handler
+- Security update
+- Added ability for insertion of 'see mobile version' link into theme
+- Added akm_template filter
+
+
+= 2.0 =
+
+- Added wp-mobile theme; how/what is displayed in the mobile version
+- Restructured plugin
+
+
+= 1.8 = 
+
+- Localization support
+- Comment support for already logged in users
+- Added check_mobile and mobile_redirect functions
+
+
+= 1.7 =
+
+- WordPress 1.2 support
+
+
+
