@@ -21,28 +21,23 @@ Mobile browsers are automatically detected, the list of mobile browsers can be c
 
 = Is this compatible with the WP plugin auto-upgrade feature? =
 
-No. The mobile theme needs to be moved to your themes directory and the WP plugin auto-upgrade does not do this. For this reason, please follow the installation instructions here.
-
+Yes, as of version 3.2 you can use the auto-upgrade feature and no longer have to move any folders.
 
 = Is this compatible with WP (Super) Cache? =
 
 Yes, it is compatible with WP Super Cache 0.9 (using WP Cache mode).
 
-
 = Does this create a mobile admin interface too? =
 
 No, it does not.
-
 
 = Does this serve a mobile interface to mobile web search crawlers? =
 
 Yes, to Google and Yahoo mobile search crawlers. You can add any others by adding their user agents in the plugin's Settings page.
 
-
 = Does this support iPhones and other "touch" browsers? =
 
 Yes, as of version 3.0. There is a customized interface for advanced mobile browsers and special styling to make things "finger-sized" for touch browsers.
-
 
 = My mobile device isn't automatically detected, what do I do? =
 
@@ -50,16 +45,13 @@ Visit the settings page and use the link there to identify your mobile browser's
 
 Then add that to the list of mobile browsers in your settings.
 
-
 = Does this conflict with other iPhone theme plugins? =
 
 Not fundamentally. If you remove the iPhone from the list of detected browsers, then the other iPhone theme should work as normal.
 
-
 = Does this support pages too? =
 
 Yes, it does.
-
 
 = Can I create a link that forces someone to see the mobile version? =
 
@@ -69,19 +61,19 @@ Yes, this is included as an experimental feature in version 2.1. The link can be
 
 If you would prefer you own link text:
 
-`<?php if (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link('Link Text'); } ?>`
+`<?php if (function_exists('cfmobi_mobile_link') { cfmobi_mobile_link('This is the link text'); } ?>`
 
-Note that this does not work if you have WP Cache enabled.
+To add a link to any page or post use the shortcode: [cfmobile-link] or [cfmobile-link linktext="This is the link text"] If the user is already using a mobile browser listed in the settings and not currently on the mobile theme, the plugin will automatically produce a return link after the content.
 
+Note that neither of these work if you have WP Cache enabled.
 
 = Why are recent posts shown on every page? =
 
 This is a feature of the plugin to allow easy access to recent content.
 
-
 = How do I customize the display of the mobile interface? =
 
-The contents of the wp-mobile folder are a standard WordPress theme. Any changes you make there will affect the display of the mobile interface.
+The contents of the Carrington-mobile folder are a standard WordPress theme. Any changes you make there will affect the display of the mobile interface.
 
 
 == Examples ==
@@ -121,6 +113,8 @@ add_action('cfmobi_settings_form', 'your_settings_form');`
 - Created a working-html directory
 - Added the option of custom link text for clfmobi_mobile_link()
 - Included options for default Exit and Return mobile version text. 
+- Added shortcode for cfmobile_link [cfmobi-link]
+- No longer need to move the theme file into the theme directory
 
 = 3.1 =
 
