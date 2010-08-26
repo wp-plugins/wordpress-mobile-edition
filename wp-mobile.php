@@ -531,8 +531,8 @@ class CFmobi_Widget extends WP_Widget {
     /** @see WP_Widget::widget */
     function widget($args, $instance) {		
         extract( $args );
-		$link_text = $instance['$link_text'];
-		cfmobi_mobile_link((string)$link_text);	
+		$link_text = $instance['link_text'];
+		cfmobi_mobile_link($link_text);	
     }
 
 
