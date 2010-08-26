@@ -181,7 +181,7 @@ function cfmobi_check_mobile() {
 	return apply_filters('cfmobi_check_mobile', $mobile);
 }
 
-if (cfmobi_check_mobile()) {
+if (cfmobi_check_mobile() && !is_admin()) {
 	add_filter('theme_root', 'cfmobi_set_theme_root');
 	add_filter('theme_root_uri', 'cfmobi_set_theme_root_uri');
 	add_filter('template', 'cfmobi_set_template');
@@ -258,8 +258,8 @@ function cfmobi_request_handler() {
 					'cf_mobile',
 					'false',
 					time() + 300000,
-					$path,  //  use   '/',            for local cookie support 
-					$domain //  use   false, false    for local cookie support 
+					'/',//$path,  //  use   '/',            for local cookie support 
+					false,false//$domain //  use   false, false    for local cookie support 
 				);
 				$redirect = true;
 				break;
@@ -268,8 +268,8 @@ function cfmobi_request_handler() {
 					'cf_mobile',
 					'true',
 					time() + 300000,
-					$path,  //  use   '/',            for local cookie support 
-					$domain //  use   false, false    for local cookie support 
+					'/',//$path,  //  use   '/',            for local cookie support 
+					false,false//$domain //  use   false, false    for local cookie support
 				);
 				$redirect = true;
 				break;
@@ -415,7 +415,7 @@ function cfmobi_admin_menu() {
 add_action('admin_menu', 'cfmobi_admin_menu');
 
 function cfmobi_plugin_action_links($links, $file) {
-	$plugin_file = basename(CFMOBI_FILE);
+	$plugin_file = plugin_basename(CFMOBI_FILE);
 	if ($file == $plugin_file) {
 		$settings_link = '<a href="options-general.php?page='.$plugin_file.'">'.__('Settings', 'cf-mobile').'</a>';
 		array_unshift($links, $settings_link);
@@ -517,6 +517,41 @@ function cfmobi_save_settings() {
 		update_option('cfmobi_exit_link_subtext', $_POST['cfmobi_exit_link_subtext']);
 	}
 }
+
+
+class Cfmobi_Widget extends WP_Widget {
+    /** constructor */
+    function Cfmobi_Widget() {
+        parent::WP_Widget(false, $name = 'Wordpress Mobile Edition');	
+    }
+
+    /** @see WP_Widget::widget */
+    function widget($args, $instance) {		
+        extract( $args );
+		$link_text = $instance['$link_text'];
+		cfmobi_mobile_link((string)$link_text);	
+    }
+
+
+    function update($new_instance, $old_instance) {				
+		$instance = $old_instance;
+		$instance['link_text'] = strip_tags($new_instance['link_text']);
+        return $instance;
+    }
+
+    /** @see WP_Widget::form */
+    function form($instance) {				
+        $link_text = esc_attr($instance['link_text']);
+        ?>
+            <p><label for="<?php echo $this->get_field_id('link_text'); ?>"><?php _e('Link Text:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" type="text" value="<?php echo $link_text; ?>" /></label></p>
+        <?php 
+    }
+
+}
+
+add_action('widgets_init', create_function('', 'return register_widget("Cfmobi_Widget");'));
+
+
 
 // Multisite support/utility functions
 function cfmobi_get_site_blogs() {

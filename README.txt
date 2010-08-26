@@ -73,7 +73,7 @@ This is a feature of the plugin to allow easy access to recent content.
 
 = How do I customize the display of the mobile interface? =
 
-The contents of the Carrington-mobile folder are a standard WordPress theme. Any changes you make there will affect the display of the mobile interface.
+The contents of the carrington-mobile folder are a standard WordPress theme. Any changes you make there will affect the display of the mobile interface.
 
 
 == Examples ==
