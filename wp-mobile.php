@@ -419,8 +419,10 @@ add_action('admin_menu', 'cfmobi_admin_menu');
 
 function cfmobi_plugin_action_links($links, $file) {
 	$plugin_file = plugin_basename(CFMOBI_FILE);
+	error_log($file . ' ' . $plugin_file);
 	if ($file == $plugin_file) {
-		$settings_link = '<a href="options-general.php?page='.$plugin_file.'">'.__('Settings', 'cf-mobile').'</a>';
+		http://localhost/wordpress/wp-admin/options-general.php?page=wp-mobile.php
+		$settings_link = '<a href="options-general.php?page=wp-mobile.php">'.__('Settings', 'cf-mobile').'</a>';
 		array_unshift($links, $settings_link);
 	}
 	return $links;
