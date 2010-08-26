@@ -232,8 +232,6 @@ function cfmobi_mobile_link($link_text = null) {
 	}
 }
 
-// TODO - add sidebar widget for link, with some sort of graphic?
-
 function cfmobi_request_handler() {
 	if (!empty($_GET['cf_action'])) {
 		$url = parse_url(get_bloginfo('home'));
@@ -310,6 +308,9 @@ add_action('init', 'cfmobi_request_handler');
 function cfmobi_clean_url()
 {
 	$url = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+	// Cleaner ways to do this, but not too many to check here
+	$url = str_replace('?cf_action=show_mobile&', '?', $url);
+	$url = str_replace('?cf_action=reject_mobile&', '?', $url);
 	$url = str_replace('?cf_action=show_mobile', '', $url);
 	$url = str_replace('?cf_action=reject_mobile', '', $url);
 	$url = str_replace('&cf_action=show_mobile', '', $url);
@@ -338,6 +339,7 @@ jQuery(function($) {
 	die();
 }
 
+// Should we register/use a generic name for our working-html js and css so we dont load them for every plugin?
 if (is_admin()) {
 	wp_enqueue_script('cfmobi_admin_js', trailingslashit(get_bloginfo('url')).'?cf_action=cfmobi_admin_js', array('jquery'));
 	wp_enqueue_script('cfmobi_admin_cookie_js', trailingslashit(CFMOBI_HTML_URL) . 'js/jquery.cookie.js', array('jquery'));
@@ -483,9 +485,10 @@ function cfmobi_settings_form() {
 	</form>
 </div>
 	');
-	include CFMOBI_HTML_DIR.'/includes/cf-callouts.php';
 	
 	do_action('cfmobi_settings_form');
+	//This shouldnt be above the settings form hook should it?
+	include CFMOBI_HTML_DIR.'/includes/cf-callouts.php';
 }
 
 function cfmobi_save_settings() {
@@ -519,7 +522,7 @@ function cfmobi_save_settings() {
 }
 
 
-class Cfmobi_Widget extends WP_Widget {
+class CFmobi_Widget extends WP_Widget {
     /** constructor */
     function Cfmobi_Widget() {
         parent::WP_Widget(false, $name = 'Wordpress Mobile Edition');	
@@ -543,15 +546,14 @@ class Cfmobi_Widget extends WP_Widget {
     function form($instance) {				
         $link_text = esc_attr($instance['link_text']);
         ?>
+			<p>Display a link that forces a user to see the mobile version</p>
             <p><label for="<?php echo $this->get_field_id('link_text'); ?>"><?php _e('Link Text:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" type="text" value="<?php echo $link_text; ?>" /></label></p>
         <?php 
     }
 
 }
 
-add_action('widgets_init', create_function('', 'return register_widget("Cfmobi_Widget");'));
-
-
+add_action('widgets_init', create_function('', 'return register_widget("CFmobi_Widget");'));
 
 // Multisite support/utility functions
 function cfmobi_get_site_blogs() {
