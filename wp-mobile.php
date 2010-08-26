@@ -9,13 +9,13 @@ Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
-// WordPress Mobile Edition
-//
-// Copyright (c) 2002-2010 Crowd Favorite, Ltd.
-// http://crowdfavorite.com
+// Copyright (c) 2007-2010 Crowd Favorite, Ltd., Alex King. All rights reserved.
 //
 // Released under the GPL license
 // http://www.opensource.org/licenses/gpl-license.php
+//
+// This is an add-on for WordPress
+// http://wordpress.org/
 //
 // **********************************************************************
 // This program is distributed in the hope that it will be useful, but
