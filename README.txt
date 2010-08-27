@@ -13,7 +13,6 @@ Mobile browsers are automatically detected, the list of mobile browsers can be c
 == Installation ==
 
 1. Drop the wp-mobile.php file in your wp-content/plugins directory
-2. Drop the carrington-mobile.(version #) directory in your wp-content/themes directory
 3. Click the 'Activate' link for WordPress Mobile Edition on your Plugins page (in the WordPress admin interface)
 
 
@@ -105,7 +104,6 @@ add_action('cfmobi_settings_form', 'your_settings_form');`
 == Changelog ==
 
 = 3.2 =
-
 - Updated to carrington-mobile.1.1
 - Updated changelog for previous versions
 - Added additional security
@@ -117,71 +115,53 @@ add_action('cfmobi_settings_form', 'your_settings_form');`
 - No longer need to move the theme file into the theme directory
 
 = 3.1 =
-
 - Added changelog
 - Added filter to enable other plugins to participate in mobile checking
 - Added hook to enable other plugins to add to the settings page
 
-
 = 3.0.5 =
-
 - Updated Carrington mobile theme
 - Added default support for webOS
 
-
 = 3.0.4 =
-
 - Updated README FAQ
 
-
 = 3.0.3 =
-
 - Support for Carrington mobile theme versioning
 
-
 = 3.0.2 =
-
 - Default support for google and yahoo mobile crawlers
 - Check to see where the plugin file is located  /plugins or /plugins/wordpress-mobile-edition
 
-
 = 3.0.1 =
-
 - Readme update
 
-
 = 3.0 =
-
 - Compatibility with WP Super cache
 - Restructuring of how the plugin works
 - Added a theme based on Carrington mobile to display the mobile version
 - Created an options page to add custom user agents
 
-
 = 2.1 =
-
 - Added custom request handler
 - Security update
 - Added ability for insertion of 'see mobile version' link into theme
 - Added akm_template filter
 
-
 = 2.0 =
-
 - Added wp-mobile theme; how/what is displayed in the mobile version
 - Restructured plugin
 
-
 = 1.8 = 
-
 - Localization support
 - Comment support for already logged in users
 - Added check_mobile and mobile_redirect functions
 
-
 = 1.7 =
-
 - WordPress 1.2 support
+
+= 1.0 =
+The first version
 
 
 
