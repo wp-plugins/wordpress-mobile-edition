@@ -27,7 +27,7 @@ Author URI: http://crowdfavorite.com
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
 load_plugin_textdomain('cf-mobile');
-
+define('CFMOBI_VERSION', '3.2');
 define('CF_MOBILE_THEME', 'carrington-mobile.1.1');
 define('CF_TEST_DIR', 'wordpress-mobile-edition'); //Used in local testing, comment out on production
 
@@ -114,6 +114,7 @@ function cfmobi_activate() {
 		cfmobi_activate_single();
 	}
 }
+
 function cfmobi_activate_single() {			
 	add_option('cfmobi_mobile_browsers', implode("\n", cfmobi_default_browsers('mobile')));
 	add_option('cfmobi_touch_browsers', implode("\n", cfmobi_default_browsers('touch')));
@@ -328,13 +329,6 @@ function cfmobi_admin_init() {
 }
 add_action('admin_init', 'cfmobi_admin_init');
 
-function cfmobi_admin_head() {
-	if (is_admin() && $_GET['page'] == basename(__FILE__)) {
-		echo '<link rel="stylesheet" type="text/css" href="'.trailingslashit(get_bloginfo('url')).'?cf_action=cfmobi_admin_css" />';
-	}
-}
-add_action('admin_head', 'cfmobi_admin_head');
-
 $cfmobi_settings = array(
 	'cfmobi_mobile_browsers' => array(
 		'type' => 'textarea',
@@ -368,15 +362,6 @@ $cfmobi_settings = array(
 	),
 );
 
-function cfmobi_setting($option) {
-	$value = get_option($option);
-	if (empty($value)) {
-		global $cfmobi_settings;
-		$value = $cfmobi_settings[$option]['default'];
-	}
-	return $value;
-}
-
 function cfmobi_admin_menu() {
 	if (current_user_can('manage_options')) {
 		add_options_page(
@@ -405,7 +390,9 @@ function cfmobi_settings_form() {
 	global $cfmobi_settings;
 	
  	print('<div id="cf" class="wrap">
-			<h2>'.__('WordPress Mobile Edition Settings', 'cf-mobile').'</h2>');
+			<h2>'.__('WordPress Mobile Edition Settings', 'cf-mobile'). ' ' . CF_Admin_UI::cf_support_button('Wordpress Mobile Edition' . CFMOBI_VERSION) .'</h2>
+			<p>'.__('Browsers that have a <a href="http://en.wikipedia.org/wiki/User_agent">User Agent</a> matching a key below will be shown the mobile version of your site instead of the normal theme.', $text_domain).'</p>'
+			);
 	CF_Admin_UI::cf_settings_form($cfmobi_settings, 'cfmobi', 'cf-mobile');
 	do_action('cfmobi_settings_form');
 	CF_Admin_UI::cf_callouts();
