@@ -457,8 +457,8 @@ function cfmobi_get_touch_browsers() {
 
 // Multisite support/utility functions
 function cfmobi_is_multisite_and_network_activation() {
-	return (function_exists('is_multisite') && is_multisite() &&
-			isset($_GET['networkwide']) && ($_GET['networkwide'] == 1));
+	return CF_Admin::cf_is_multisite_and_network_activation();
+
 }
 
 function cfmobi_activate_for_network() {
