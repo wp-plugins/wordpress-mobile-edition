@@ -40,7 +40,7 @@ else if (is_file(trailingslashit(WP_PLUGIN_DIR).'wordpress-mobile-edition/wp-mob
 	define('CFMOBI_DIR_URL', trailingslashit(WP_PLUGIN_URL).'wordpress-mobile-edition/');
 }
 
-require_once(trailingslashit(dirname(CFMOBI_FILE)) . 'admin-ui/cf-admin-ui.php');
+require_once(trailingslashit(dirname(CFMOBI_FILE)) . 'admin-ui/cf-admin.php');
 register_activation_hook(CFMOBI_FILE, 'cfmobi_activate');
 
 function cfmobi_default_browsers($type = 'mobile') {
@@ -291,7 +291,7 @@ add_action('init', 'cfmobi_request_handler');
 function cfmobi_clean_url()
 {
 	$url = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-	// Cleaner ways to do this, but not too many to check here
+	// Slicker ways to do this, but not too many to check here
 	$url = str_replace('?cf_action=show_mobile&', '?', $url);
 	$url = str_replace('?cf_action=reject_mobile&', '?', $url);
 	$url = str_replace('?cf_action=show_mobile', '', $url);
@@ -323,11 +323,12 @@ jQuery(function($) {
 
 function cfmobi_admin_init() {
 	if (is_admin() && $_GET['page'] == basename(__FILE__)) {
-		CF_Admin_UI::cf_load_js();
-		CF_Admin_UI::cf_load_css();
+		CF_Admin::cf_load_js();
+		CF_Admin::cf_load_css();
 	}	
 }
 add_action('admin_init', 'cfmobi_admin_init');
+
 
 $cfmobi_settings = array(
 	'cfmobi_mobile_browsers' => array(
@@ -335,30 +336,38 @@ $cfmobi_settings = array(
 		'label' => __('Mobile Browsers', 'cf-mobile').' <a href="#" id="cfmobi_mobile_reset">'.__('Reset to Default', 'cf-mobile').'</a>',
 		'default' => cfmobi_default_browsers('mobile'),
 		'help' => '',
+		'input_class' => '',
+		'labe_class' => '',
+		'help_class' => '',
+		'div_class' => 'elm-width-300',
 	),
 	'cfmobi_touch_browsers' => array(
 		'type' => 'textarea',
 		'label' => __('Touch Browsers', 'cf-mobile').' <a href="#" id="cfmobi_touch_reset">'.__('Reset to Default', 'cf-mobile').'</a>',
 		'default' => __('Return to the Mobile Edition', 'cf_mobi' ),
 		'help' => '(iPhone, Android G1, BlackBerry Storm, etc.)',
+		'div_class' => 'elm-width-300',
 	),
 	'cfmobi_return_link_text' => array(
 		'type' => 'text',
 		'label' => __('Return to mobile link-text', 'cf-mobile'),
 		'default' => __('Return to the Mobile Edition', 'cf-mobile'),
 		'help' => '',
+		'div_class' => 'elm-width-300',
 	),
 	'cfmobi_exit_link_text' => array(
 		'type' => 'text',
 		'label' => __('Exit mobile version link-text', 'cf-mobile'),
 		'default' => __('Exit the Mobile Edition', 'cf-mobile'),
 		'help' => '',
+		'div_class' => 'elm-width-300',
 	),
 	'cfmobi_exit_link_subtext' => array(
 		'type' => 'text',
 		'label' => __('	Exit mobile version link description', 'cf-mobile'),
 		'default' => __('(view the standard browser version)', 'cf-mobile'),
 		'help' => '',
+		'div_class' => 'elm-width-300',		
 	),
 );
 
@@ -376,55 +385,29 @@ function cfmobi_admin_menu() {
 add_action('admin_menu', 'cfmobi_admin_menu');
 
 function cfmobi_plugin_action_links($links, $file) {
-	$plugin_file = basename(__FILE__);
-	if (basename($file) == $plugin_file) {
-		$settings_link = '<a href="options-general.php?page='.$plugin_file.'">'.__('Settings', 'cf-mobile').'</a>';
-		array_unshift($links, $settings_link);
-	}
-	return $links;
+	return CF_Admin::cf_plugin_action_links($links, $file, CFMOBI_FILE);
 }
 add_filter('plugin_action_links', 'cfmobi_plugin_action_links', 10, 2);
 
-
 function cfmobi_settings_form() {
 	global $cfmobi_settings;
+	echo '<div class="wrap">';
 	
- 	print('<div id="cf" class="wrap">
-			<h2>'.__('WordPress Mobile Edition Settings', 'cf-mobile'). ' ' . CF_Admin_UI::cf_support_button('Wordpress Mobile Edition' . CFMOBI_VERSION) .'</h2>
-			<p>'.__('Browsers that have a <a href="http://en.wikipedia.org/wiki/User_agent">User Agent</a> matching a key below will be shown the mobile version of your site instead of the normal theme.', $text_domain).'</p>'
-			);
-	CF_Admin_UI::cf_settings_form($cfmobi_settings, 'cfmobi', 'cf-mobile');
+	CF_Admin::cf_admin_header(__('WordPress Mobile Edition Settings', 'cf-mobile'), 'Wordpress Mobile Edition', CFMOBI_VERSION);
+	echo '<p>'.__('Browsers that have a <a href="http://en.wikipedia.org/wiki/User_agent">User Agent</a> matching a key below will be shown the mobile version of your site instead of the normal theme.', $text_domain).'</p>';
+	CF_Admin::cf_settings_form($cfmobi_settings, 'cfmobi', 'cf-mobile');
 	do_action('cfmobi_settings_form');
-	CF_Admin_UI::cf_callouts();
-	print('</div>');
+	CF_Admin::cf_callouts();
 	
+	echo '</div>';	
 }
 
 function cfmobi_save_settings() {
-	if (!current_user_can('manage_options')) {
+	if (!is_admin() || !current_user_can('manage_options')) {
 		return;
 	}
 	global $cfmobi_settings;
-	foreach ($cfmobi_settings as $key => $option) {
-		$value = '';
-		switch ($option['type']) {
-			case 'int':
-				$value = intval($_POST[$key]);
-				break;
-			case 'select':
-				$test = stripslashes($_POST[$key]);
-				if (isset($option['options'][$test])) {
-					$value = $test;
-				}
-				break;
-			case 'string':
-			case 'textarea':
-			default:
-				$value = stripslashes($_POST[$key]);
-				break;
-		}
-		update_option($key, $value);
-	}
+	CF_Admin::cf_save_settings($cfmobi_settings);
 }
 
 class CFmobi_Widget extends WP_Widget {
@@ -473,38 +456,18 @@ function cfmobi_get_touch_browsers() {
 }
 
 // Multisite support/utility functions
-function cfmobi_get_site_blogs() {
-	global $wpdb;
-	return $wpdb->get_col("
-		SELECT blog_id
-		FROM $wpdb->blogs
-		WHERE site_id = '{$wpdb->siteid}'
-		AND deleted = 0
-	");	
-}
-
 function cfmobi_is_multisite_and_network_activation() {
 	return (function_exists('is_multisite') && is_multisite() &&
 			isset($_GET['networkwide']) && ($_GET['networkwide'] == 1));
 }
 
 function cfmobi_activate_for_network() {
-	$blogs = cfmobi_get_site_blogs();
-	foreach ($blogs as $blog_id) {
-		switch_to_blog($blog_id);
-		cfmobi_activate_single();
-		restore_current_blog();
-	}
-	return;
+	CF_Admin::cf_activate_for_network('cfmobi_activate_single');
 }
 
 function cfmobi_new_blog($blog_id) {
-	if (is_plugin_active_for_network(plugin_basename(CFMOBI_FILE))) {
-		switch_to_blog($blog_id);
-		cfmobi_activate_single();
-		restore_current_blog();
-	}	
+	CF_Admin::cf_new_blog(CFMOBI_FILE, $blog_id);
 }
-add_action( 'wpmu_new_blog', 'cfmobi_new_blog');
+add_action('wpmu_new_blog', 'cfmobi_new_blog');
 
 ?>
