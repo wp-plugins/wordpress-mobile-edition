@@ -40,7 +40,7 @@ else if (is_file(trailingslashit(WP_PLUGIN_DIR).'wordpress-mobile-edition/wp-mob
 	define('CFMOBI_DIR_URL', trailingslashit(WP_PLUGIN_URL).'wordpress-mobile-edition/');
 }
 
-require_once(trailingslashit(dirname(CFMOBI_FILE)) . 'admin-ui/cf-admin.php');
+require_once(trailingslashit(dirname(CFMOBI_FILE)) . 'cf-admin/cf-admin.php');
 register_activation_hook(CFMOBI_FILE, 'cfmobi_activate');
 
 function cfmobi_default_browsers($type = 'mobile') {
