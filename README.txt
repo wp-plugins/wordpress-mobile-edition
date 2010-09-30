@@ -12,8 +12,8 @@ Mobile browsers are automatically detected, the list of mobile browsers can be c
 
 == Installation ==
 
-1. Drop the wp-mobile.php file in your wp-content/plugins directory
-3. Click the 'Activate' link for WordPress Mobile Edition on your Plugins page (in the WordPress admin interface)
+1. Drop the wordpress-mobile-edition directory in your wp-content/plugins directory
+2. Click the 'Activate' link for WordPress Mobile Edition on your Plugins page (in the WordPress admin interface)
 
 
 == Frequently Asked Questions ==

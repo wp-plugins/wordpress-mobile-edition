@@ -429,10 +429,10 @@ class CFmobi_Widget extends WP_Widget {
 
 	function form($instance) {				
  		$link_text = esc_html($instance['link_text']);
-		print('
+		echo('
 			<p>'.__('Display a link that forces a user to see the mobile version' . 'cf-mobile') . '</p>
  			<p><label for="' . $this->get_field_id('link_text') . '">' . __('Link Text', 'cf-mobile') . '<input class="widefat" id="'. $this->get_field_id('link_text') . '" name="' . $this->get_field_name('link_text') . '" type="text" value="' . $link_text .'" /></label></p>
-        ');
+        	');
 	}
 }
 add_action('widgets_init', create_function('', 'return register_widget("CFmobi_Widget");'));
@@ -465,7 +465,7 @@ function cfmobi_activate_for_network() {
 }
 
 function cfmobi_new_blog($blog_id) {
-	CF_Admin::cf_new_blog(CFMOBI_FILE, $blog_id);
+	CF_Admin::cf_new_blog(CFMOBI_FILE, $blog_id, 'cfmobi_activate_single');
 }
 add_action('wpmu_new_blog', 'cfmobi_new_blog');
 
