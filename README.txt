@@ -1,6 +1,7 @@
 === WordPress Mobile Edition ===
-Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry, carrington
 Contributors: alexkingorg, crowdfavorite
+Donate link: http://crowdfavorite.com/donate/
+Tags: mobile, pda, wireless, cellphone, phone, iphone, touch, webkit, android, blackberry, carrington
 Minimum version: 3.0
 Tested with: 3.0.1
 Stable tag: 3.2
