@@ -107,7 +107,6 @@ function cfmobi_default_browsers($type = 'mobile') {
 		'Windows CE',
 		'WinWAP',
 		'YahooSeeker/M1A1-R2D2',
-		'Mozilla/5.0'
 	);
 	$touch = array(
 		'iPhone',
